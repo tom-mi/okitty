@@ -17,9 +17,7 @@ interface DateRangePickerState {
     toDate: string,
 }
 
-
 export default class DateRangePicker extends Component<DateRangePickerProps, DateRangePickerState> {
-
 
     constructor(props: Readonly<DateRangePickerProps>) {
         super(props);

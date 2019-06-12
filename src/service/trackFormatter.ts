@@ -8,7 +8,7 @@ import Stroke from "ol/style/Stroke";
 import GeoJSON from "ol/format/GeoJSON";
 
 
-export function layerFromTrackFilter(trackLayer: TrackLayer, track: Track): Layer {
+export function layerFromTrackFilter(trackLayer: TrackLayer, track: Track): VectorLayer {
     return new VectorLayer({
         source: new VectorSource({
             url: getLocationUrl(track.device, 'linestring', trackLayer.from, trackLayer.to),
