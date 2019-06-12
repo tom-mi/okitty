@@ -7,6 +7,7 @@ export function deviceEquals(a: Device, b: Device): boolean { return a.user === 
 
 export interface Track {
     device: Device
+    color: string
 }
 
 export enum TrackFormat {
@@ -22,4 +23,3 @@ export interface TrackGroup {
     to: string,
     tracks: Array<Track>
 }
-

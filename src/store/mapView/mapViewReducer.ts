@@ -2,6 +2,7 @@ import {Device, deviceEquals, TrackGroup, Track} from "../modelTypes";
 import {ActionTypes, DEVICES_RECEIVE_DEVICES, MAP_VIEW_CHANGE_DATE_RANGE} from "../actionTypes";
 import moment from 'moment';
 import {minFrom, maxTo} from "../../service/timeRangeService";
+import {getIndexedColor} from "../../service/colorService";
 
 export interface MapViewState {
     trackGroups: Array<TrackGroup>
@@ -27,6 +28,7 @@ const initialState: MapViewState = {
 const defaultTrack = (device: Device, index: number): Track => {
     return {
         device: device,
+        color: getIndexedColor(index),
     };
 };
 

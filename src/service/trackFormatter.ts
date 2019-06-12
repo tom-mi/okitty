@@ -15,7 +15,7 @@ export function layerFromTrackFilter(trackLayer: TrackGroup, track: Track): Vect
         }),
         style: () => new Style({
             stroke: new Stroke({
-                color: '#0000FF',
+                color: track.color,
                 width: 5,
             }),
         }),

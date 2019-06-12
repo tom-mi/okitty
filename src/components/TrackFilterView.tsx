@@ -44,6 +44,7 @@ class TrackFilterView extends Component<TrackFilterProps> {
                 <List component="nav">
                     {trackLayer.tracks.map((track, trackIndex) =>
                         <ListItem key={trackIndex}>
+                            <div className="TrackFilterView-colorindicator" style={{backgroundColor: track.color}} />
                             <ListItemText primary={`${track.device.user} / ${track.device.device}`}/>
                         </ListItem>)
                     }

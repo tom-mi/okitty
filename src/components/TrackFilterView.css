@@ -2,3 +2,9 @@
     padding: 5px;
     margin: 5px;
 }
+
+.TrackFilterView-colorindicator {
+    width: 30px;
+    height: 20px;
+    margin-right: 8px;
+}
