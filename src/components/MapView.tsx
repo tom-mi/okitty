@@ -7,7 +7,6 @@ import {defaults as defaultControls} from 'ol/control';
 import 'ol/ol.css';
 import './MapComponent.css';
 import Geolocation from "ol/Geolocation";
-import Control from "ol/control/Control";
 import {fromLonLat} from "ol/proj";
 import {getMapViewTrackLayers} from "../store/mapView/mapViewSelector";
 import {TrackLayer} from "../store/modelTypes";
@@ -19,6 +18,7 @@ import {layerFromTrackFilter} from "../service/trackFormatter";
 import * as extent from 'ol/extent';
 import {Extent} from "ol/extent";
 import VectorLayer from "ol/layer/Vector";
+import SimpleMapControl from "./SimpleMapControl";
 
 
 interface MapMappedProps {
@@ -29,27 +29,14 @@ type  MapProps = MapMappedProps
 
 interface MapState {
     map: Map
+    controls: {
+        zoomToTracks: SimpleMapControl,
+    }
     trackLayers: Array<VectorLayer>
     geolocation: Geolocation
+    zoomSynchronized: boolean,
 }
 
-class CustomControls extends Control {
-
-    constructor(onClick: (() => void)) {
-
-        const button = document.createElement('button');
-        button.innerHTML = 'N';
-        const element = document.createElement('div');
-        element.className = 'ol-control MapComponent-custom-controls';
-        element.appendChild(button);
-
-        super({
-            element: element,
-        });
-
-        element.addEventListener('click', onClick);
-    }
-}
 
 class MapView extends Component<MapProps, MapState> {
     private mapRef = React.createRef<HTMLDivElement>();
@@ -59,10 +46,11 @@ class MapView extends Component<MapProps, MapState> {
         const geolocation = new Geolocation({
             tracking: true,
         });
+        const zoomToTracksControl = new SimpleMapControl('⛶', [0, 3], this.zoomToCurrentTracksAndSynchronizeZoom);
         const map = new Map({
             target: this.mapRef.current!,
             controls: defaultControls().extend([
-                new CustomControls(this.jumpToCurrentLocation),
+                zoomToTracksControl,
             ]),
             layers: [
                 this.tileLayer,
@@ -73,10 +61,16 @@ class MapView extends Component<MapProps, MapState> {
             }),
         });
 
+        map.on('pointerdrag', this.disableZoomSynchronization);  // TODO find a way to detect manual zoom also
+
         this.setState({
             map: map,
             geolocation: geolocation,
             trackLayers: [],
+            controls: {
+                zoomToTracks: zoomToTracksControl,
+            },
+            zoomSynchronized: true,
         });
     }
 
@@ -87,7 +81,7 @@ class MapView extends Component<MapProps, MapState> {
         nextProps.trackLayers.forEach(trackLayer => {
             trackLayer.tracks.forEach(track => {
                 const layer = layerFromTrackFilter(trackLayer, track);
-                layer.on('change', this.zoomToCurrentTracks);
+                layer.on('change', this.zoomToCurrentTracksIfSynchronized);
                 trackLayers.push(layer);
             })
         });
@@ -98,7 +92,25 @@ class MapView extends Component<MapProps, MapState> {
         this.setState({trackLayers: trackLayers});
     };
 
-    zoomToCurrentTracks = () => {
+    disableZoomSynchronization = (event: any) => {
+        console.log('disable zoom sync', event);
+        this.setState({
+            zoomSynchronized: false,
+        });
+    };
+
+    zoomToCurrentTracksAndSynchronizeZoom = () => {
+        this.setState({
+            zoomSynchronized: true,
+        }, () => {
+            this.zoomToCurrentTracksIfSynchronized();
+        })
+    };
+
+    zoomToCurrentTracksIfSynchronized = () => {
+        if (!this.state.zoomSynchronized) {
+            return;
+        }
         let trackExtent: Extent = extent.createEmpty();
         this.state.trackLayers.forEach(layer => {
             if (layer.getSource().getExtent()) {
@@ -110,19 +122,9 @@ class MapView extends Component<MapProps, MapState> {
         }
     };
 
-    jumpToCurrentLocation = () => {
-        const currentPosition = this.state.geolocation.getPosition();
-        if (currentPosition) {
-            this.state.map.getView().animate({
-                center: fromLonLat(currentPosition),
-                zoom: 12,
-                duration: 2000,
-            });
-        }
-    };
-
     render() {
         this.state && this.state.map.updateSize();
+        this.state && this.state.controls.zoomToTracks.setVisibility(!this.state.zoomSynchronized);
         return (
             <div className="MapComponent" id="map" ref={this.mapRef}/>
         );
