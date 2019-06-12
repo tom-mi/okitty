@@ -7,9 +7,8 @@ import {defaults as defaultControls} from 'ol/control';
 import 'ol/ol.css';
 import './MapComponent.css';
 import Geolocation from "ol/Geolocation";
-import {fromLonLat} from "ol/proj";
-import {getMapViewTrackLayers} from "../store/mapView/mapViewSelector";
-import {TrackLayer} from "../store/modelTypes";
+import {getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
+import {TrackGroup} from "../store/modelTypes";
 import {connect} from "react-redux";
 import {State} from "../store/rootReducer";
 import Layer from "ol/layer/Layer";
@@ -22,7 +21,7 @@ import SimpleMapControl from "./SimpleMapControl";
 
 
 interface MapMappedProps {
-    trackLayers: Array<TrackLayer>
+    trackLayers: Array<TrackGroup>
 }
 
 type  MapProps = MapMappedProps
@@ -133,5 +132,5 @@ class MapView extends Component<MapProps, MapState> {
 
 
 export default connect((state: State): MapProps => ({
-    trackLayers: getMapViewTrackLayers(state),
+    trackLayers: getMapViewTrackGroups(state),
 }))(MapView)

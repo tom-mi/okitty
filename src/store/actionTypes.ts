@@ -19,7 +19,7 @@ export interface ReceiveDevicesAction {
 }
 
 export interface ChangeDateRangePayload {
-    trackLayerIndex: number,
+    trackGroupIndex: number,
     fromDate: string,
     toDate: string,
 }

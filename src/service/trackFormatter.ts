@@ -1,5 +1,4 @@
-import {Track, TrackLayer} from "../store/modelTypes";
-import Layer from "ol/layer/Layer";
+import {Track, TrackGroup} from "../store/modelTypes";
 import VectorSource from "ol/source/Vector";
 import {getLocationUrl} from "./otRecorderClient";
 import VectorLayer from "ol/layer/Vector";
@@ -8,7 +7,7 @@ import Stroke from "ol/style/Stroke";
 import GeoJSON from "ol/format/GeoJSON";
 
 
-export function layerFromTrackFilter(trackLayer: TrackLayer, track: Track): VectorLayer {
+export function layerFromTrackFilter(trackLayer: TrackGroup, track: Track): VectorLayer {
     return new VectorLayer({
         source: new VectorSource({
             url: getLocationUrl(track.device, 'linestring', trackLayer.from, trackLayer.to),

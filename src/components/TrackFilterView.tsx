@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import 'ol/ol.css';
 import './MapComponent.css';
-import {TrackLayer} from "../store/modelTypes";
+import {TrackGroup} from "../store/modelTypes";
 import {Box} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import {getMapViewTrackLayers} from "../store/mapView/mapViewSelector";
+import {getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
 import {State} from "../store/rootReducer";
 import {connect} from "react-redux";
 import './TrackFilterView.css';
@@ -17,7 +17,7 @@ import DateRangePicker from "./DateRangePicker";
 
 
 interface TrackFilterMappedProps {
-    trackLayers: Array<TrackLayer>
+    trackLayers: Array<TrackGroup>
 }
 
 interface TrackFilterDispatchProps {
@@ -54,7 +54,7 @@ class TrackFilterView extends Component<TrackFilterProps> {
 }
 
 export default connect((state: State): TrackFilterMappedProps => ({
-    trackLayers: getMapViewTrackLayers(state),
+    trackLayers: getMapViewTrackGroups(state),
 }), (dispatch: ThunkDispatch<State, void, ActionTypes>): TrackFilterDispatchProps => ({
     updateDateRange: (index: number, fromDate: string, toDate: string) => dispatch(updateDateRange(index, fromDate, toDate)),
 }))(TrackFilterView)

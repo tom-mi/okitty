@@ -1,13 +1,13 @@
-import {Device, deviceEquals, TrackLayer, Track} from "../modelTypes";
+import {Device, deviceEquals, TrackGroup, Track} from "../modelTypes";
 import {ActionTypes, DEVICES_RECEIVE_DEVICES, MAP_VIEW_CHANGE_DATE_RANGE} from "../actionTypes";
 import moment from 'moment';
-import {clampIsoDatetimeToLocalDateInterval, minFrom, maxTo} from "../../service/timeRangeService";
+import {minFrom, maxTo} from "../../service/timeRangeService";
 
 export interface MapViewState {
-    trackLayers: Array<TrackLayer>
+    trackGroups: Array<TrackGroup>
 }
 
-const defaultTrackLayer = (): TrackLayer => {
+const defaultTrackGroup = (): TrackGroup => {
     const fromDate = moment().subtract(7, "day").format('YYYY-MM-DD');
     const toDate = moment().format('YYYY-MM-DD');
 
@@ -21,7 +21,7 @@ const defaultTrackLayer = (): TrackLayer => {
 };
 
 const initialState: MapViewState = {
-    trackLayers: [defaultTrackLayer()]
+    trackGroups: [defaultTrackGroup()]
 };
 
 const defaultTrack = (device: Device, index: number): Track => {
@@ -30,7 +30,7 @@ const defaultTrack = (device: Device, index: number): Track => {
     };
 };
 
-const updateViewsWithDevices = (oldViews: Array<TrackLayer>, devices: Array<Device>): Array<TrackLayer> => {
+const updateViewsWithDevices = (oldViews: Array<TrackGroup>, devices: Array<Device>): Array<TrackGroup> => {
     return oldViews.map(oldView => ({
         ...oldView,
         tracks: devices.map((device, index) => (
@@ -39,7 +39,7 @@ const updateViewsWithDevices = (oldViews: Array<TrackLayer>, devices: Array<Devi
     }));
 };
 
-const updateViewWithDateRange = (oldViews: Array<TrackLayer>, index: number, fromDate: string, toDate: string): Array<TrackLayer> => {
+const updateViewWithDateRange = (oldViews: Array<TrackGroup>, index: number, fromDate: string, toDate: string): Array<TrackGroup> => {
     return oldViews.map((oldView, oldViewIndex) => (oldViewIndex === index ? {
         ...oldView,
         fromDate: fromDate,
@@ -55,11 +55,11 @@ export function mapViewReducer(
 ): MapViewState {
     switch (action.type) {
         case DEVICES_RECEIVE_DEVICES:
-            return {...state, trackLayers: updateViewsWithDevices(state.trackLayers, action.payload.devices)};
+            return {...state, trackGroups: updateViewsWithDevices(state.trackGroups, action.payload.devices)};
         case MAP_VIEW_CHANGE_DATE_RANGE:
             return {
                 ...state,
-                trackLayers: updateViewWithDateRange(state.trackLayers, action.payload.trackLayerIndex, action.payload.fromDate, action.payload.toDate)
+                trackGroups: updateViewWithDateRange(state.trackGroups, action.payload.trackGroupIndex, action.payload.fromDate, action.payload.toDate)
             }
     }
     return state

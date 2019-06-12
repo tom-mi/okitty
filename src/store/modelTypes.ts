@@ -15,7 +15,7 @@ export enum TrackFormat {
     HEATMAP,
 }
 
-export interface TrackLayer {
+export interface TrackGroup {
     fromDate: string,
     toDate: string,
     from: string,

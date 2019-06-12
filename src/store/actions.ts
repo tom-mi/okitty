@@ -29,6 +29,6 @@ export const fetchDevices = (): ThunkAction<void, State, void, ActionTypes> => a
 export const updateDateRange = (trackLayerIndex: number, fromDate: string, toDate: string): ActionTypes => {
    return {
       type: MAP_VIEW_CHANGE_DATE_RANGE,
-       payload: { trackLayerIndex, fromDate, toDate },
+       payload: { trackGroupIndex: trackLayerIndex, fromDate, toDate },
    };
 };

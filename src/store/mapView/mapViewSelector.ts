@@ -1,5 +1,5 @@
 import {State} from "../rootReducer";
-import {TrackLayer} from "../modelTypes";
+import {TrackGroup} from "../modelTypes";
 
 
-export const getMapViewTrackLayers = (state: State) : Array<TrackLayer> => state.mapView.trackLayers
+export const getMapViewTrackGroups = (state: State) : Array<TrackGroup> => state.mapView.trackGroups;
