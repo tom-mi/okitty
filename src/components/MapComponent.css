@@ -1,0 +1,14 @@
+.MapComponent {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 200px;
+    background-color: green;  /* TODO for debugging */
+}
+
+.MapComponent-custom-controls {
+    position: absolute;
+    top: 100px;
+}

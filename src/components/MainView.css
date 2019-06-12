@@ -1,0 +1,17 @@
+.MainView {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.MainView-track-filter {
+    position: relative;
+}
+
+.MainView-map {
+    position: relative;
+    flex-grow: 1;
+    background-color: orange;  /* TODO for debugging */
+}
