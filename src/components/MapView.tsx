@@ -78,7 +78,9 @@ class MapView extends Component<MapProps, MapState> {
         const trackLayers: Array<VectorLayer> = [];
 
         nextProps.trackLayers.forEach(trackLayer => {
-            trackLayer.tracks.forEach(track => {
+            trackLayer.tracks
+                .filter(track => track.active)
+                .forEach(track => {
                 const layer = layerFromTrackFilter(trackLayer, track);
                 layer.on('change', this.zoomToCurrentTracksIfSynchronized);
                 trackLayers.push(layer);
@@ -117,7 +119,7 @@ class MapView extends Component<MapProps, MapState> {
             }
         });
         if (!extent.isEmpty(trackExtent)) {
-            this.state.map.getView().fit(trackExtent);
+            this.state.map.getView().fit(trackExtent, {maxZoom: 18});
         }
     };
 

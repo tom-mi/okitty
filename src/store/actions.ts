@@ -1,5 +1,11 @@
 import {ThunkAction} from "redux-thunk";
-import {ActionTypes, DEVICES_RECEIVE_DEVICES, DEVICES_REQUEST_DEVICES, MAP_VIEW_CHANGE_DATE_RANGE} from "./actionTypes";
+import {
+   ActionTypes,
+   DEVICES_RECEIVE_DEVICES,
+   DEVICES_REQUEST_DEVICES,
+   MAP_VIEW_CHANGE_DATE_RANGE,
+   MAP_VIEW_SET_TRACK_ACTIVE
+} from "./actionTypes";
 import {Device} from "./modelTypes";
 import {State} from "./rootReducer";
 import {getDevices} from "../service/otRecorderClient";
@@ -31,4 +37,15 @@ export const updateDateRange = (trackLayerIndex: number, fromDate: string, toDat
       type: MAP_VIEW_CHANGE_DATE_RANGE,
        payload: { trackGroupIndex: trackLayerIndex, fromDate, toDate },
    };
+};
+
+export const setTrackActive = (trackGroupIndex: number, trackIndex: number, active: boolean): ActionTypes => {
+   return {
+      type: MAP_VIEW_SET_TRACK_ACTIVE,
+      payload: {
+         trackGroupIndex: trackGroupIndex,
+         trackIndex: trackIndex,
+         active: active,
+      }
+   }
 };

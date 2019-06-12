@@ -6,6 +6,7 @@ export interface Device {
 export function deviceEquals(a: Device, b: Device): boolean { return a.user === b.user && a.device === b.device }
 
 export interface Track {
+    active: boolean
     device: Device
     color: string
 }

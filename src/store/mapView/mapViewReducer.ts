@@ -1,5 +1,10 @@
 import {Device, deviceEquals, TrackGroup, Track} from "../modelTypes";
-import {ActionTypes, DEVICES_RECEIVE_DEVICES, MAP_VIEW_CHANGE_DATE_RANGE} from "../actionTypes";
+import {
+    ActionTypes,
+    DEVICES_RECEIVE_DEVICES,
+    MAP_VIEW_CHANGE_DATE_RANGE,
+    MAP_VIEW_SET_TRACK_ACTIVE, SetTrackActivePayload
+} from "../actionTypes";
 import moment from 'moment';
 import {minFrom, maxTo} from "../../service/timeRangeService";
 import {getIndexedColor} from "../../service/colorService";
@@ -27,6 +32,7 @@ const initialState: MapViewState = {
 
 const defaultTrack = (device: Device, index: number): Track => {
     return {
+        active: true,
         device: device,
         color: getIndexedColor(index),
     };
@@ -51,6 +57,16 @@ const updateViewWithDateRange = (oldViews: Array<TrackGroup>, index: number, fro
     } : oldView));
 };
 
+const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload: SetTrackActivePayload) => {
+    return oldGroups.map((oldGroup, oldgroupIndex) => (oldgroupIndex === payload.trackGroupIndex ? {
+        ...oldGroup,
+        tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => (oldTrackIndex === payload.trackIndex ? {
+            ...oldTrack,
+            active: payload.active,
+        } : oldTrack))
+    } : oldGroup));
+};
+
 export function mapViewReducer(
     state = initialState,
     action: ActionTypes,
@@ -61,8 +77,13 @@ export function mapViewReducer(
         case MAP_VIEW_CHANGE_DATE_RANGE:
             return {
                 ...state,
-                trackGroups: updateViewWithDateRange(state.trackGroups, action.payload.trackGroupIndex, action.payload.fromDate, action.payload.toDate)
-            }
+                trackGroups: updateViewWithDateRange(state.trackGroups, action.payload.trackGroupIndex, action.payload.fromDate, action.payload.toDate),
+            };
+        case MAP_VIEW_SET_TRACK_ACTIVE:
+            return {
+                ...state,
+                trackGroups: updateTrackGroupsWithActiveTrack(state.trackGroups, action.payload),
+            };
     }
     return state
 }
