@@ -1,12 +1,13 @@
-import {Device, deviceEquals, TrackGroup, Track} from "../modelTypes";
+import {Device, deviceEquals, RenderStyle, Track, TrackGroup} from "../modelTypes";
 import {
     ActionTypes,
     DEVICES_RECEIVE_DEVICES,
     MAP_VIEW_CHANGE_DATE_RANGE,
-    MAP_VIEW_SET_TRACK_ACTIVE, SetTrackActivePayload
+    MAP_VIEW_SET_TRACK_ACTIVE,
+    SetTrackActivePayload
 } from "../actionTypes";
 import moment from 'moment';
-import {minFrom, maxTo} from "../../service/timeRangeService";
+import {maxTo, minFrom} from "../../service/timeRangeService";
 import {getIndexedColor} from "../../service/colorService";
 
 export interface MapViewState {
@@ -18,6 +19,7 @@ const defaultTrackGroup = (): TrackGroup => {
     const toDate = moment().format('YYYY-MM-DD');
 
     return {
+        renderStyle: RenderStyle.TRACK,
         fromDate: fromDate,
         toDate: toDate,
         from: minFrom(fromDate),
@@ -26,9 +28,9 @@ const defaultTrackGroup = (): TrackGroup => {
     }
 };
 
-const initialState: MapViewState = {
+const initialState = () : MapViewState => ({
     trackGroups: [defaultTrackGroup()]
-};
+});
 
 const defaultTrack = (device: Device, index: number): Track => {
     return {
@@ -68,7 +70,7 @@ const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload:
 };
 
 export function mapViewReducer(
-    state = initialState,
+    state: MapViewState = initialState(),
     action: ActionTypes,
 ): MapViewState {
     switch (action.type) {

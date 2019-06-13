@@ -11,13 +11,14 @@ export interface Track {
     color: string
 }
 
-export enum TrackFormat {
+export enum RenderStyle {
     TRACK,
     POINTS,
     HEATMAP,
 }
 
 export interface TrackGroup {
+    renderStyle: RenderStyle,
     fromDate: string,
     toDate: string,
     from: string,

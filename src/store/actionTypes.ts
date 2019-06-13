@@ -6,6 +6,10 @@ export const DEVICES_RECEIVE_DEVICES = 'DEVICES_RECEIVE_DEVICES';
 export const MAP_VIEW_CHANGE_DATE_RANGE = 'MAP_VIEW_CHANGE_DATE_RANGE';
 export const MAP_VIEW_SET_TRACK_ACTIVE = 'MAP_VIEW_SET_TRACK_ACTIVE';
 
+export interface NoOp {
+    type: undefined,
+}
+
 export interface RequestDevicesAction {
     type: typeof DEVICES_REQUEST_DEVICES,
 }
@@ -41,4 +45,4 @@ export interface SetTrackActiveAction {
     payload: SetTrackActivePayload,
 }
 
-export type ActionTypes = RequestDevicesAction | ReceiveDevicesAction | ChangeDateRangeAction | SetTrackActiveAction
+export type ActionTypes = NoOp | RequestDevicesAction | ReceiveDevicesAction | ChangeDateRangeAction | SetTrackActiveAction
