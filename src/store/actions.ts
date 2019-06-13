@@ -3,10 +3,10 @@ import {
    ActionTypes,
    DEVICES_RECEIVE_DEVICES,
    DEVICES_REQUEST_DEVICES,
-   MAP_VIEW_CHANGE_DATE_RANGE,
+   MAP_VIEW_CHANGE_DATE_RANGE, MAP_VIEW_SET_RENDER_STYLE,
    MAP_VIEW_SET_TRACK_ACTIVE
 } from "./actionTypes";
-import {Device} from "./modelTypes";
+import {Device, RenderStyle} from "./modelTypes";
 import {State} from "./rootReducer";
 import {getDevices} from "../service/otRecorderClient";
 
@@ -47,5 +47,15 @@ export const setTrackActive = (trackGroupIndex: number, trackIndex: number, acti
          trackIndex: trackIndex,
          active: active,
       }
-   }
+   };
+};
+
+export const setRenderStyle = (trackGroupIndex: number, renderStyle: RenderStyle): ActionTypes => {
+   return {
+      type: MAP_VIEW_SET_RENDER_STYLE,
+      payload: {
+         trackGroupIndex: trackGroupIndex,
+         renderStyle: renderStyle,
+      }
+   };
 };

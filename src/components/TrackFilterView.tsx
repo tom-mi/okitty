@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import 'ol/ol.css';
 import './MapComponent.css';
-import {TrackGroup} from "../store/modelTypes";
+import {RenderStyle, TrackGroup} from "../store/modelTypes";
 import {Box} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -12,10 +12,11 @@ import {connect} from "react-redux";
 import './TrackFilterView.css';
 import {ActionTypes} from "../store/actionTypes";
 import {ThunkDispatch} from "redux-thunk";
-import {setTrackActive, updateDateRange} from "../store/actions";
+import {setRenderStyle, setTrackActive, updateDateRange} from "../store/actions";
 import DateRangePicker from "./DateRangePicker";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
+import RenderStyleSelector from "./RenderStyleSelector";
 
 
 interface TrackFilterMappedProps {
@@ -25,6 +26,7 @@ interface TrackFilterMappedProps {
 interface TrackFilterDispatchProps {
     updateDateRange: (index: number, fromDate: string, toDate: string) => any,
     setTrackActive: (trackGroupIndex: number, trackIndex: number, active: boolean) => any,
+    setRenderStyle: (trackGroupIndex: number, renderStyle: RenderStyle) => any,
 }
 
 type  TrackFilterProps = TrackFilterMappedProps & TrackFilterDispatchProps
@@ -40,23 +42,28 @@ class TrackFilterView extends Component<TrackFilterProps> {
         this.props.setTrackActive(trackGroupIndex, trackIndex, !isActive);
     };
 
+    handleRenderStyleChange = (trackGroupIndex: number) => (renderStyle: RenderStyle) => {
+        this.props.setRenderStyle(trackGroupIndex, renderStyle);
+    };
+
     render() {
-        return this.props.trackLayers.map((trackLayer, trackLayerIndex) =>
-            <Box key={trackLayerIndex}>
-                <div>Track group {trackLayerIndex}</div>
+        return this.props.trackLayers.map((trackGroup, trackGroupIndex) =>
+            <Box key={trackGroupIndex}>
+                <div>Track group {trackGroupIndex}</div>
                 <DateRangePicker
-                    fromDate={trackLayer.fromDate}
-                    toDate={trackLayer.toDate}
-                    onChange={this.handleDateRangeChange(trackLayerIndex)}
+                    fromDate={trackGroup.fromDate}
+                    toDate={trackGroup.toDate}
+                    onChange={this.handleDateRangeChange(trackGroupIndex)}
                 />
+                <RenderStyleSelector renderStyle={trackGroup.renderStyle} onChange={this.handleRenderStyleChange(trackGroupIndex)}/>
                 <List component="nav">
-                    {trackLayer.tracks.map((track, trackIndex) =>
-                        <ListItem key={trackIndex} button onClick={this.handleToggleTrack(trackLayerIndex, trackIndex)}>
+                    {trackGroup.tracks.map((track, trackIndex) =>
+                        <ListItem key={trackIndex} button onClick={this.handleToggleTrack(trackGroupIndex, trackIndex)}>
                             <ListItemIcon>
                                 <Checkbox
                                     checked={track.active}
                                     disableRipple
-                                    onChange={this.handleToggleTrack(trackLayerIndex, trackIndex)}
+                                    onChange={this.handleToggleTrack(trackGroupIndex, trackIndex)}
                                 />
                             </ListItemIcon>
                             <div className="TrackFilterView-colorindicator" style={{backgroundColor: track.color}} />
@@ -74,4 +81,5 @@ export default connect((state: State): TrackFilterMappedProps => ({
 }), (dispatch: ThunkDispatch<State, void, ActionTypes>): TrackFilterDispatchProps => ({
     updateDateRange: (index: number, fromDate: string, toDate: string) => dispatch(updateDateRange(index, fromDate, toDate)),
     setTrackActive: (trackGroupIndex: number, trackIndex: number, active: boolean) => dispatch(setTrackActive(trackGroupIndex, trackIndex, active)),
+    setRenderStyle: (trackGroupIndex: number, renderStyle: RenderStyle) => dispatch(setRenderStyle(trackGroupIndex, renderStyle)),
 }))(TrackFilterView)

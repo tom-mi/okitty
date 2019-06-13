@@ -13,7 +13,7 @@ import {connect} from "react-redux";
 import {State} from "../store/rootReducer";
 import Layer from "ol/layer/Layer";
 import LayerGroup from "ol/layer/Group";
-import {layerFromTrackFilter} from "../service/trackFormatter";
+import {layersFromTrackGroup} from "../service/trackFormatter";
 import * as extent from 'ol/extent';
 import {Extent} from "ol/extent";
 import VectorLayer from "ol/layer/Vector";
@@ -21,7 +21,7 @@ import SimpleMapControl from "./SimpleMapControl";
 
 
 interface MapMappedProps {
-    trackLayers: Array<TrackGroup>
+    trackGroups: Array<TrackGroup>
 }
 
 type  MapProps = MapMappedProps
@@ -77,24 +77,18 @@ class MapView extends Component<MapProps, MapState> {
         const layers: Array<Layer> = [this.tileLayer];
         const trackLayers: Array<VectorLayer> = [];
 
-        nextProps.trackLayers.forEach(trackLayer => {
-            trackLayer.tracks
-                .filter(track => track.active)
-                .forEach(track => {
-                const layer = layerFromTrackFilter(trackLayer, track);
-                layer.on('change', this.zoomToCurrentTracksIfSynchronized);
-                trackLayers.push(layer);
-            })
+        nextProps.trackGroups.forEach(trackLayer => {
+            const layersFromCurrentGroup = layersFromTrackGroup(trackLayer);
+            layersFromCurrentGroup.forEach(l => l.on('change', this.zoomToCurrentTracksIfSynchronized));
+            trackLayers.push(...layersFromCurrentGroup);
         });
 
         layers.push(...trackLayers);
         this.state.map.setLayerGroup(new LayerGroup({layers: layers}));
-        // this.state.map.getLayerGroup().on('change', this.zoomToCurrentTracks);
         this.setState({trackLayers: trackLayers});
     };
 
-    disableZoomSynchronization = (event: any) => {
-        console.log('disable zoom sync', event);
+    disableZoomSynchronization = () => {
         this.setState({
             zoomSynchronized: false,
         });
@@ -134,5 +128,5 @@ class MapView extends Component<MapProps, MapState> {
 
 
 export default connect((state: State): MapProps => ({
-    trackLayers: getMapViewTrackGroups(state),
+    trackGroups: getMapViewTrackGroups(state),
 }))(MapView)

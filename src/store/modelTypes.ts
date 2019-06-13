@@ -12,9 +12,9 @@ export interface Track {
 }
 
 export enum RenderStyle {
-    TRACK,
-    POINTS,
-    HEATMAP,
+    TRACK = 'TRACK',
+    POINTS = 'POINTS',
+    HEATMAP = 'HEATMAP',
 }
 
 export interface TrackGroup {

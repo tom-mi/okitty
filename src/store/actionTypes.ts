@@ -1,10 +1,11 @@
-import {Device} from "./modelTypes";
+import {Device, RenderStyle} from "./modelTypes";
 
 export const DEVICES_REQUEST_DEVICES = 'DEVICES_REQUEST_DEVICES';
 export const DEVICES_RECEIVE_DEVICES = 'DEVICES_RECEIVE_DEVICES';
 
 export const MAP_VIEW_CHANGE_DATE_RANGE = 'MAP_VIEW_CHANGE_DATE_RANGE';
 export const MAP_VIEW_SET_TRACK_ACTIVE = 'MAP_VIEW_SET_TRACK_ACTIVE';
+export const MAP_VIEW_SET_RENDER_STYLE = 'MAP_VIEW_SET_RENDER_STYLE';
 
 export interface NoOp {
     type: undefined,
@@ -45,4 +46,19 @@ export interface SetTrackActiveAction {
     payload: SetTrackActivePayload,
 }
 
-export type ActionTypes = NoOp | RequestDevicesAction | ReceiveDevicesAction | ChangeDateRangeAction | SetTrackActiveAction
+export interface SetRenderStylePayload {
+    trackGroupIndex: number,
+    renderStyle: RenderStyle,
+}
+
+export interface SetRenderStyleAction {
+    type: typeof MAP_VIEW_SET_RENDER_STYLE,
+    payload: SetRenderStylePayload,
+}
+
+export type ActionTypes = NoOp
+    | RequestDevicesAction
+    | ReceiveDevicesAction
+    | ChangeDateRangeAction
+    | SetTrackActiveAction
+    | SetRenderStyleAction

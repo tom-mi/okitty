@@ -3,7 +3,9 @@ import {
     ActionTypes,
     DEVICES_RECEIVE_DEVICES,
     MAP_VIEW_CHANGE_DATE_RANGE,
+    MAP_VIEW_SET_RENDER_STYLE,
     MAP_VIEW_SET_TRACK_ACTIVE,
+    SetRenderStylePayload,
     SetTrackActivePayload
 } from "../actionTypes";
 import moment from 'moment';
@@ -28,7 +30,7 @@ const defaultTrackGroup = (): TrackGroup => {
     }
 };
 
-const initialState = () : MapViewState => ({
+const initialState = (): MapViewState => ({
     trackGroups: [defaultTrackGroup()]
 });
 
@@ -69,6 +71,30 @@ const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload:
     } : oldGroup));
 };
 
+const deactivateAllTracksExceptFirst = (oldTracks: Array<Track>): Array<Track> => {
+    let foundActiveTrack: boolean = false;
+    return oldTracks.map((oldTrack) => {
+        if (oldTrack.active && !foundActiveTrack) {
+            foundActiveTrack = true;
+            return oldTrack;
+        } else {
+            return {...oldTrack, active: false};
+        }
+    });
+};
+
+const activateAllTracks = (oldTracks: Array<Track>): Array<Track> =>
+    oldTracks.map((oldTrack) => ({...oldTrack, active: true}));
+
+const updateTrackGroupsWithRenderStyle = (oldGroups: Array<TrackGroup>, payload: SetRenderStylePayload) => {
+    return oldGroups.map((oldGroup, oldgroupIndex) => (oldgroupIndex === payload.trackGroupIndex ? {
+        ...oldGroup,
+        renderStyle: payload.renderStyle,
+        tracks: payload.renderStyle === RenderStyle.HEATMAP ?
+            deactivateAllTracksExceptFirst(oldGroup.tracks) : activateAllTracks(oldGroup.tracks),
+    } : oldGroup));
+};
+
 export function mapViewReducer(
     state: MapViewState = initialState(),
     action: ActionTypes,
@@ -85,6 +111,11 @@ export function mapViewReducer(
             return {
                 ...state,
                 trackGroups: updateTrackGroupsWithActiveTrack(state.trackGroups, action.payload),
+            };
+        case MAP_VIEW_SET_RENDER_STYLE:
+            return {
+                ...state,
+                trackGroups: updateTrackGroupsWithRenderStyle(state.trackGroups, action.payload),
             };
     }
     return state
