@@ -2,9 +2,13 @@ import {Device, deviceEquals, RenderStyle, Track, TrackGroup} from "../modelType
 import {
     ActionTypes,
     DEVICES_RECEIVE_DEVICES,
+    HighlightTrackPayload,
     MAP_VIEW_CHANGE_DATE_RANGE,
+    MAP_VIEW_HIGHLIGHT_TRACK,
+    MAP_VIEW_SELECT_TRACK,
     MAP_VIEW_SET_RENDER_STYLE,
     MAP_VIEW_SET_TRACK_ACTIVE,
+    SelectTrackPayload,
     SetRenderStylePayload,
     SetTrackActivePayload
 } from "../actionTypes";
@@ -37,6 +41,8 @@ const initialState = (): MapViewState => ({
 const defaultTrack = (device: Device, index: number): Track => {
     return {
         active: true,
+        selected: false,
+        highlighted: false,
         device: device,
         color: getIndexedColor(index),
     };
@@ -71,27 +77,30 @@ const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload:
     } : oldGroup));
 };
 
-const deactivateAllTracksExceptFirst = (oldTracks: Array<Track>): Array<Track> => {
-    let foundActiveTrack: boolean = false;
-    return oldTracks.map((oldTrack) => {
-        if (oldTrack.active && !foundActiveTrack) {
-            foundActiveTrack = true;
-            return oldTrack;
-        } else {
-            return {...oldTrack, active: false};
-        }
-    });
+const updateTrackGroupsWithSelectedTrack = (oldGroups: Array<TrackGroup>, payload: SelectTrackPayload) => {
+    return oldGroups.map((oldGroup, oldGroupIndex) => ({
+        ...oldGroup,
+        tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => ({
+            ...oldTrack,
+            selected: oldGroupIndex === payload.trackGroupIndex && oldTrackIndex === payload.trackIndex,
+        })),
+    }));
 };
 
-const activateAllTracks = (oldTracks: Array<Track>): Array<Track> =>
-    oldTracks.map((oldTrack) => ({...oldTrack, active: true}));
+const updateTrackGroupsWithHighlightedTrack = (oldGroups: Array<TrackGroup>, payload: HighlightTrackPayload) => {
+    return oldGroups.map((oldGroup, oldGroupIndex) => ({
+        ...oldGroup,
+        tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => ({
+            ...oldTrack,
+            highlighted: oldGroupIndex === payload.trackGroupIndex && oldTrackIndex === payload.trackIndex,
+        })),
+    }));
+};
 
 const updateTrackGroupsWithRenderStyle = (oldGroups: Array<TrackGroup>, payload: SetRenderStylePayload) => {
     return oldGroups.map((oldGroup, oldgroupIndex) => (oldgroupIndex === payload.trackGroupIndex ? {
         ...oldGroup,
         renderStyle: payload.renderStyle,
-        tracks: payload.renderStyle === RenderStyle.HEATMAP ?
-            deactivateAllTracksExceptFirst(oldGroup.tracks) : activateAllTracks(oldGroup.tracks),
     } : oldGroup));
 };
 
@@ -116,6 +125,16 @@ export function mapViewReducer(
             return {
                 ...state,
                 trackGroups: updateTrackGroupsWithRenderStyle(state.trackGroups, action.payload),
+            };
+        case MAP_VIEW_SELECT_TRACK:
+            return {
+                ...state,
+                trackGroups: updateTrackGroupsWithSelectedTrack(state.trackGroups, action.payload),
+            };
+        case MAP_VIEW_HIGHLIGHT_TRACK:
+            return {
+                ...state,
+                trackGroups: updateTrackGroupsWithHighlightedTrack(state.trackGroups, action.payload),
             };
     }
     return state

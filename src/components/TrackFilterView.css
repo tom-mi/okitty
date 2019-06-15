@@ -3,6 +3,10 @@
     margin: 5px;
 }
 
+.TrackFilterView-checkbox-icon .MuiIconButton-root {
+    padding: 4px;
+}
+
 .TrackFilterView-colorindicator {
     width: 30px;
     height: 20px;

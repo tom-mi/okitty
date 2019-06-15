@@ -3,7 +3,7 @@ import {
    ActionTypes,
    DEVICES_RECEIVE_DEVICES,
    DEVICES_REQUEST_DEVICES,
-   MAP_VIEW_CHANGE_DATE_RANGE, MAP_VIEW_SET_RENDER_STYLE,
+   MAP_VIEW_CHANGE_DATE_RANGE, MAP_VIEW_HIGHLIGHT_TRACK, MAP_VIEW_SELECT_TRACK, MAP_VIEW_SET_RENDER_STYLE,
    MAP_VIEW_SET_TRACK_ACTIVE
 } from "./actionTypes";
 import {Device, RenderStyle} from "./modelTypes";
@@ -58,4 +58,18 @@ export const setRenderStyle = (trackGroupIndex: number, renderStyle: RenderStyle
          renderStyle: renderStyle,
       }
    };
+};
+
+export const selectTrack = (trackGroupIndex: number, trackIndex: number): ActionTypes => {
+   return {
+      type: MAP_VIEW_SELECT_TRACK,
+      payload: {trackGroupIndex, trackIndex},
+   }
+};
+
+export const highlightTrack = (trackGroupIndex: number, trackIndex: number): ActionTypes => {
+   return {
+      type: MAP_VIEW_HIGHLIGHT_TRACK,
+      payload: {trackGroupIndex, trackIndex},
+   }
 };

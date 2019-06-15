@@ -4,7 +4,7 @@ import * as MockDate from 'mockdate';
 import moment from 'moment';
 import {
     DEVICES_RECEIVE_DEVICES,
-    MAP_VIEW_CHANGE_DATE_RANGE,
+    MAP_VIEW_CHANGE_DATE_RANGE, MAP_VIEW_HIGHLIGHT_TRACK, MAP_VIEW_SELECT_TRACK,
     MAP_VIEW_SET_RENDER_STYLE,
     MAP_VIEW_SET_TRACK_ACTIVE
 } from "../actionTypes";
@@ -24,6 +24,8 @@ const defaultState = (): MapViewState => ({
 const createTrack = (device: Device): Track => ({
     color: 'blue',
     active: true,
+    selected: false,
+    highlighted: false,
     device: device,
 });
 const DEVICE_1: Device = {device: 'phone', user: 'tommi'};
@@ -32,7 +34,10 @@ const DEVICE_3: Device = {device: 'phone', user: 'john'};
 
 const populatedState = (): MapViewState => ({
     trackGroups: [
-        {...defaultTrackGroup(), tracks: [createTrack(DEVICE_1), createTrack(DEVICE_2)]},
+        {
+            ...defaultTrackGroup(),
+            tracks: [{...createTrack(DEVICE_1), selected: true, highlighted: true}, createTrack(DEVICE_2)]
+        },
         {...defaultTrackGroup(), tracks: [createTrack(DEVICE_1), createTrack(DEVICE_2)]},
     ]
 });
@@ -118,59 +123,57 @@ describe('the mapViewReducer', () => {
             expect(newState.trackGroups[1].tracks[0].active).toBeTruthy();
             expect(newState.trackGroups[1].tracks[1].active).toBeTruthy();
         });
+    });
 
-        it('deactivates all tracks but one for HEATMAP', () => {
-            const oldState = {
-                ...defaultState(),
-                renderStyle: RenderStyle.TRACK,
-                trackGroups: [{
-                    ...defaultTrackGroup(), tracks: [
-                        {...createTrack(DEVICE_1), active: false},
-                        {...createTrack(DEVICE_2), active: true},
-                        {...createTrack(DEVICE_3), active: true},
-                    ]
-                }]
-            };
-
-            const newState = mapViewReducer(oldState, {
-                type: MAP_VIEW_SET_RENDER_STYLE,
-                payload: {
-                    trackGroupIndex: 0,
-                    renderStyle: RenderStyle.HEATMAP,
-                },
+    describe('the SelectTrackAction', () => {
+        it('selects a track', () => {
+            const newState = mapViewReducer(populatedState(), {
+                type: MAP_VIEW_SELECT_TRACK,
+                payload: {trackGroupIndex: 1, trackIndex: 0},
             });
 
-            expect(newState.trackGroups[0].renderStyle).toEqual(RenderStyle.HEATMAP);
-            expect(newState.trackGroups[0].tracks[0].active).toBeFalsy();
-            expect(newState.trackGroups[0].tracks[1].active).toBeTruthy();
-            expect(newState.trackGroups[0].tracks[2].active).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[0].selected).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[1].selected).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[0].selected).toBeTruthy();
+            expect(newState.trackGroups[1].tracks[1].selected).toBeFalsy();
         });
 
-        [RenderStyle.TRACK, RenderStyle.POINTS].forEach(renderStyle => {
-            it(`activate all tracks but one for ${renderStyle}`, () => {
-                const oldState = {
-                    ...defaultState(),
-                    renderStyle: RenderStyle.TRACK,
-                    trackGroups: [{
-                        ...defaultTrackGroup(), tracks: [
-                            {...createTrack(DEVICE_1), active: false},
-                            {...createTrack(DEVICE_2), active: true},
-                        ]
-                    }]
-                };
-
-                const newState = mapViewReducer(oldState, {
-                    type: MAP_VIEW_SET_RENDER_STYLE,
-                    payload: {
-                        trackGroupIndex: 0,
-                        renderStyle: renderStyle,
-                    },
-                });
-
-                expect(newState.trackGroups[0].renderStyle).toEqual(renderStyle);
-                expect(newState.trackGroups[0].tracks[0].active).toBeTruthy();
-                expect(newState.trackGroups[0].tracks[1].active).toBeTruthy();
+        it('unselects track', () => {
+            const newState = mapViewReducer(populatedState(), {
+                type: MAP_VIEW_SELECT_TRACK,
+                payload: {trackGroupIndex: 1, trackIndex: -1},
             });
+
+            expect(newState.trackGroups[0].tracks[0].selected).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[1].selected).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[0].selected).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[1].selected).toBeFalsy();
+        });
+    });
+
+    describe('the HighlightTrackAction', () => {
+        it('highligts a track', () => {
+            const newState = mapViewReducer(populatedState(), {
+                type: MAP_VIEW_HIGHLIGHT_TRACK,
+                payload: {trackGroupIndex: 1, trackIndex: 0},
+            });
+
+            expect(newState.trackGroups[0].tracks[0].highlighted).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[1].highlighted).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[0].highlighted).toBeTruthy();
+            expect(newState.trackGroups[1].tracks[1].highlighted).toBeFalsy();
+        });
+
+        it('un-highlights track', () => {
+            const newState = mapViewReducer(populatedState(), {
+                type: MAP_VIEW_HIGHLIGHT_TRACK,
+                payload: {trackGroupIndex: 1, trackIndex: -1},
+            });
+
+            expect(newState.trackGroups[0].tracks[0].highlighted).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[1].highlighted).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[0].highlighted).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[1].highlighted).toBeFalsy();
         });
     });
 });

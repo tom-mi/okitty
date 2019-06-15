@@ -7,6 +7,8 @@ export function deviceEquals(a: Device, b: Device): boolean { return a.user === 
 
 export interface Track {
     active: boolean
+    selected: boolean
+    highlighted: boolean
     device: Device
     color: string
 }
@@ -16,6 +18,8 @@ export enum RenderStyle {
     POINTS = 'POINTS',
     HEATMAP = 'HEATMAP',
 }
+
+export const AllRenderStyles = [RenderStyle.TRACK, RenderStyle.POINTS, RenderStyle.HEATMAP];
 
 export interface TrackGroup {
     renderStyle: RenderStyle,
