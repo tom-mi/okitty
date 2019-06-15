@@ -80,7 +80,8 @@ const updateTrackGroupsWithSelectedTrack = (oldGroups: Array<TrackGroup>, payloa
         ...oldGroup,
         tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => ({
             ...oldTrack,
-            selected: oldGroupIndex === payload.trackGroupIndex && oldTrackIndex === payload.trackIndex,
+            selected: oldGroupIndex === payload.trackGroupIndex && oldTrackIndex === payload.trackIndex ?
+                !oldTrack.selected : false,
         })),
     }));
 };

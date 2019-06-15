@@ -146,6 +146,18 @@ describe('the mapViewReducer', () => {
             expect(newState.trackGroups[1].tracks[0].selected).toBeFalsy();
             expect(newState.trackGroups[1].tracks[1].selected).toBeFalsy();
         });
+
+        it('unselects track if selecting again', () => {
+            const newState = mapViewReducer(populatedState(), {
+                type: MAP_VIEW_SELECT_TRACK,
+                payload: {trackGroupIndex: 0, trackIndex: 0},
+            });
+
+            expect(newState.trackGroups[0].tracks[0].selected).toBeFalsy();
+            expect(newState.trackGroups[0].tracks[1].selected).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[0].selected).toBeFalsy();
+            expect(newState.trackGroups[1].tracks[1].selected).toBeFalsy();
+        });
     });
 
     describe('the HighlightTrackAction', () => {

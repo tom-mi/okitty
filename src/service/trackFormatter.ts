@@ -34,10 +34,10 @@ function pointLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer
 }
 
 export function getTrackColor(track: Track): string {
-    if (track.highlighted) {
-        return SECONDARY_COLOR;
-    } else if (track.selected) {
+    if (track.selected) {
         return PRIMARY_COLOR;
+    } else if (track.highlighted) {
+        return SECONDARY_COLOR;
     } else {
         return SECONDARY_COLOR_OPAQUE;
     }
