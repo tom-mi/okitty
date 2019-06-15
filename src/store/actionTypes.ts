@@ -1,4 +1,4 @@
-import {Device, RenderStyle} from "./modelTypes";
+import {Device, MapLayer, RenderStyle} from "./modelTypes";
 
 export const DEVICES_REQUEST_DEVICES = 'DEVICES_REQUEST_DEVICES';
 export const DEVICES_RECEIVE_DEVICES = 'DEVICES_RECEIVE_DEVICES';
@@ -8,6 +8,8 @@ export const MAP_VIEW_SET_TRACK_ACTIVE = 'MAP_VIEW_SET_TRACK_ACTIVE';
 export const MAP_VIEW_SELECT_TRACK = 'MAP_VIEW_SELECT_TRACK';
 export const MAP_VIEW_HIGHLIGHT_TRACK = 'MAP_VIEW_HIGHLIGHT_TRACK';
 export const MAP_VIEW_SET_RENDER_STYLE = 'MAP_VIEW_SET_RENDER_STYLE';
+export const MAP_VIEW_SET_CONTROLS_VISIBLE = 'MAP_VIEW_SET_CONTROLS_VISIBLE';
+export const MAP_VIEW_SET_MAP_LAYER = 'MAP_VIEW_SET_MAP_LAYER';
 
 export interface NoOp {
     type: undefined,
@@ -78,6 +80,16 @@ export interface HighlightTrackAction {
     payload: HighlightTrackPayload,
 }
 
+export interface SetControlsVisibleAction {
+    type: typeof MAP_VIEW_SET_CONTROLS_VISIBLE,
+    payload: { controlsVisible: boolean },
+}
+
+export interface SetMapLayerAction {
+    type: typeof MAP_VIEW_SET_MAP_LAYER,
+    payload: { mapLayer: MapLayer },
+}
+
 export type ActionTypes = NoOp
     | RequestDevicesAction
     | ReceiveDevicesAction
@@ -86,3 +98,5 @@ export type ActionTypes = NoOp
     | SetRenderStyleAction
     | SelectTrackAction
     | HighlightTrackAction
+    | SetControlsVisibleAction
+    | SetMapLayerAction

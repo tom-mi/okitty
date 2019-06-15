@@ -1,4 +1,4 @@
-import {Device, deviceEquals, RenderStyle, Track, TrackGroup} from "../modelTypes";
+import {Device, deviceEquals, MapLayer, RenderStyle, Track, TrackGroup} from "../modelTypes";
 import {
     ActionTypes,
     DEVICES_RECEIVE_DEVICES,
@@ -6,6 +6,7 @@ import {
     MAP_VIEW_CHANGE_DATE_RANGE,
     MAP_VIEW_HIGHLIGHT_TRACK,
     MAP_VIEW_SELECT_TRACK,
+    MAP_VIEW_SET_CONTROLS_VISIBLE, MAP_VIEW_SET_MAP_LAYER,
     MAP_VIEW_SET_RENDER_STYLE,
     MAP_VIEW_SET_TRACK_ACTIVE,
     SelectTrackPayload,
@@ -17,6 +18,8 @@ import {maxTo, minFrom} from "../../service/timeRangeService";
 
 export interface MapViewState {
     trackGroups: Array<TrackGroup>
+    controlsVisible: boolean
+    mapLayer: MapLayer
 }
 
 const defaultTrackGroup = (): TrackGroup => {
@@ -34,7 +37,9 @@ const defaultTrackGroup = (): TrackGroup => {
 };
 
 const initialState = (): MapViewState => ({
-    trackGroups: [defaultTrackGroup()]
+    controlsVisible: true,
+    trackGroups: [defaultTrackGroup()],
+    mapLayer: MapLayer.OSM,
 });
 
 const defaultTrack = (device: Device): Track => {
@@ -135,6 +140,16 @@ export function mapViewReducer(
                 ...state,
                 trackGroups: updateTrackGroupsWithHighlightedTrack(state.trackGroups, action.payload),
             };
+        case MAP_VIEW_SET_CONTROLS_VISIBLE:
+            return {
+                ...state,
+                controlsVisible: action.payload.controlsVisible,
+            }
+        case MAP_VIEW_SET_MAP_LAYER:
+            return {
+                ...state,
+                mapLayer: action.payload.mapLayer,
+            }
     }
     return state
 }

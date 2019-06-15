@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
 import OlMap from "ol/Map";
 import View from "ol/View";
 import {defaults as defaultControls} from 'ol/control';
 import 'ol/ol.css';
 import './MapComponent.css';
 import Geolocation from "ol/Geolocation";
-import {getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
-import {AllRenderStyles, deviceEquals, RenderStyle, TrackGroup} from "../store/modelTypes";
+import {getMapViewControlsVisible, getMapViewMapLayer, getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
+import {AllMapLayers, AllRenderStyles, deviceEquals, MapLayer, RenderStyle, TrackGroup} from "../store/modelTypes";
 import {connect} from "react-redux";
 import {State} from "../store/rootReducer";
 import Layer from "ol/layer/Layer";
@@ -23,10 +21,14 @@ import {
 import * as extent from 'ol/extent';
 import {Extent} from 'ol/extent';
 import SimpleMapControl from "./SimpleMapControl";
+import {createMapLayer} from "../service/mapLayerProvider";
+import TileLayer from "ol/layer/Tile";
 
 
 interface MapMappedProps {
+    controlsVisible: boolean  // this is only to trigger map redraw on controls hide/show
     trackGroups: Array<TrackGroup>
+    mapLayer: MapLayer
 }
 
 type  MapProps = MapMappedProps
@@ -36,17 +38,20 @@ interface MapState {
     controls: {
         zoomToTracks: SimpleMapControl,
     }
+    tileLayers: Array<{ type: MapLayer, tileLayer: TileLayer }>
     trackLayers: Array<Array<LayerByRenderStyle>>
     geolocation: Geolocation
     zoomSynchronized: boolean,
 }
 
-
 class MapView extends Component<MapProps, MapState> {
     private mapRef = React.createRef<HTMLDivElement>();
-    private tileLayer = new TileLayer({source: new OSM()});
 
     componentDidMount(): void {
+        const tileLayers = AllMapLayers.map(mapLayer => ({
+            type: mapLayer,
+            tileLayer: createMapLayer(mapLayer),
+        }));
         const geolocation = new Geolocation({
             tracking: true,
         });
@@ -57,7 +62,7 @@ class MapView extends Component<MapProps, MapState> {
                 zoomToTracksControl,
             ]),
             layers: [
-                this.tileLayer,
+                tileLayers.find(it => it.type === this.props.mapLayer)!.tileLayer,
             ],
             view: new View({
                 center: [0, 0],
@@ -70,6 +75,7 @@ class MapView extends Component<MapProps, MapState> {
         this.setState({
             map: map,
             geolocation: geolocation,
+            tileLayers: tileLayers,
             trackLayers: [],
             controls: {
                 zoomToTracks: zoomToTracksControl,
@@ -78,7 +84,10 @@ class MapView extends Component<MapProps, MapState> {
         });
     }
 
-    hasTrackDataChanged(nextProps: Readonly<MapProps>): boolean {
+    hasLayerDataChanged(nextProps: Readonly<MapProps>): boolean {
+        if (this.props.mapLayer !== nextProps.mapLayer) {
+            return true;
+        }
         if (this.props.trackGroups.length !== nextProps.trackGroups.length) {
             return true;
         }
@@ -102,8 +111,8 @@ class MapView extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: Readonly<MapProps>, nextContext: any): void {
-        if (this.hasTrackDataChanged(nextProps)) {
-            const layers: Array<Layer> = [this.tileLayer];
+        if (this.hasLayerDataChanged(nextProps)) {
+            const layers: Array<Layer> = [this.state.tileLayers.find(it => it.type === nextProps.mapLayer)!.tileLayer];
             const trackGroupLayers: Array<Array<LayerByRenderStyle>> =
                 nextProps.trackGroups.map(trackGroup => layersFromTrackGroup(trackGroup));
             layers.push(...trackGroupLayers.flat().map(tl => Object.values(tl)).flat());
@@ -114,6 +123,8 @@ class MapView extends Component<MapProps, MapState> {
             this.state.map.setLayerGroup(new LayerGroup({layers: layers}));
             this.setState({trackLayers: trackGroupLayers});
         }
+        // Correct map sizing, see https://gis.stackexchange.com/questions/31409/openlayers-redrawing-map-after-container-resize
+        setTimeout(() => this.state.map.updateSize(), 50);
     }
 
     setVisibilityAndStyleOfTrackLayers() {
@@ -136,8 +147,6 @@ class MapView extends Component<MapProps, MapState> {
             });
         });
     }
-
-
 
     disableZoomSynchronization = () => {
         this.setState({
@@ -184,5 +193,7 @@ class MapView extends Component<MapProps, MapState> {
 
 
 export default connect((state: State): MapProps => ({
+    controlsVisible: getMapViewControlsVisible(state),
     trackGroups: getMapViewTrackGroups(state),
+    mapLayer: getMapViewMapLayer(state),
 }))(MapView)

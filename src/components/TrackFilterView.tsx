@@ -6,7 +6,7 @@ import {Box, WithTheme} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import {getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
+import {getMapViewControlsVisible, getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
 import {State} from "../store/rootReducer";
 import {connect} from "react-redux";
 import './TrackFilterView.css';
@@ -21,6 +21,7 @@ import withTheme from "@material-ui/core/styles/withTheme";
 
 
 interface TrackFilterMappedProps {
+    controlsVisible: boolean
     trackLayers: Array<TrackGroup>
 }
 
@@ -58,6 +59,9 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
     };
 
     render() {
+        if (!this.props.controlsVisible) {
+            return '';
+        }
         return this.props.trackLayers.map((trackGroup, trackGroupIndex) =>
             <Box className="TrackFilterView-trackgroup" key={trackGroupIndex}>
                 <DateRangePicker
@@ -102,6 +106,7 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
 }
 
 export default connect((state: State): TrackFilterMappedProps => ({
+    controlsVisible: getMapViewControlsVisible(state),
     trackLayers: getMapViewTrackGroups(state),
 }), (dispatch: ThunkDispatch<State, void, ActionTypes>): TrackFilterDispatchProps => ({
     updateDateRange: (index: number, fromDate: string, toDate: string) => dispatch(updateDateRange(index, fromDate, toDate)),

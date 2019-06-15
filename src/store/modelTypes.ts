@@ -20,6 +20,14 @@ export enum RenderStyle {
 
 export const AllRenderStyles = [RenderStyle.TRACK, RenderStyle.POINTS, RenderStyle.HEATMAP];
 
+export enum MapLayer {
+    OSM = 'OSM',
+    DARK_MATTER = 'DARK_MATTER',
+    OPEN_TOPO_MAP = 'OPEN_TOPO_MAP',
+}
+
+export const AllMapLayers = [ MapLayer.OSM, MapLayer.DARK_MATTER, MapLayer.OPEN_TOPO_MAP ];
+
 export interface TrackGroup {
     renderStyle: RenderStyle,
     fromDate: string,

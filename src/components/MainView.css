@@ -6,6 +6,10 @@
     flex-direction: column;
 }
 
+.MainView-app-bar {
+    position: relative;
+}
+
 .MainView-track-filter {
     position: relative;
 }

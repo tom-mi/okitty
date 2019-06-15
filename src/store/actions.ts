@@ -3,10 +3,14 @@ import {
    ActionTypes,
    DEVICES_RECEIVE_DEVICES,
    DEVICES_REQUEST_DEVICES,
-   MAP_VIEW_CHANGE_DATE_RANGE, MAP_VIEW_HIGHLIGHT_TRACK, MAP_VIEW_SELECT_TRACK, MAP_VIEW_SET_RENDER_STYLE,
+   MAP_VIEW_CHANGE_DATE_RANGE,
+   MAP_VIEW_HIGHLIGHT_TRACK,
+   MAP_VIEW_SELECT_TRACK,
+   MAP_VIEW_SET_CONTROLS_VISIBLE, MAP_VIEW_SET_MAP_LAYER,
+   MAP_VIEW_SET_RENDER_STYLE,
    MAP_VIEW_SET_TRACK_ACTIVE
 } from "./actionTypes";
-import {Device, RenderStyle} from "./modelTypes";
+import {Device, MapLayer, RenderStyle} from "./modelTypes";
 import {State} from "./rootReducer";
 import {getDevices} from "../service/otRecorderClient";
 
@@ -72,4 +76,18 @@ export const highlightTrack = (trackGroupIndex: number, trackIndex: number): Act
       type: MAP_VIEW_HIGHLIGHT_TRACK,
       payload: {trackGroupIndex, trackIndex},
    }
+};
+
+export const setControlsVisible = (controlsVisible: boolean): ActionTypes => {
+   return {
+      type: MAP_VIEW_SET_CONTROLS_VISIBLE,
+      payload: {controlsVisible},
+   };
+};
+
+export const setMapLayer = (mapLayer: MapLayer): ActionTypes => {
+   return {
+      type: MAP_VIEW_SET_MAP_LAYER,
+      payload: {mapLayer},
+   };
 };
