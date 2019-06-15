@@ -23,8 +23,9 @@ export default class RenderStyleSelector extends Component<RenderStyleSelectorPr
         return <Box>
             {this.STYLES.map(([renderStyle, label], index) => (
                 <Button key={index}
-                    color={renderStyle === this.props.renderStyle ? "primary" : "default"}
-                    onClick={() => this.props.onChange(renderStyle)}
+                        variant="outlined"
+                        color={renderStyle === this.props.renderStyle ? "primary" : "default"}
+                        onClick={() => this.props.onChange(renderStyle)}
                 >{label}</Button>
             ))}
         </Box>;

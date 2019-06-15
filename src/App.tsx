@@ -4,7 +4,7 @@ import './App.css';
 import MainView from './components/MainView';
 import {Route, BrowserRouter as Router, Switch} from 'react-router-dom';
 import {MuiThemeProvider} from "@material-ui/core/styles";
-import {THEME} from "./theme.js";
+import {THEME} from "./theme";
 
 const App: React.FC = () => {
     return (

@@ -59,7 +59,7 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
 
     render() {
         return this.props.trackLayers.map((trackGroup, trackGroupIndex) =>
-            <Box key={trackGroupIndex} display="flex">
+            <Box className="TrackFilterView-trackgroup" key={trackGroupIndex}>
                 <DateRangePicker
                     fromDate={trackGroup.fromDate}
                     toDate={trackGroup.toDate}

@@ -8,4 +8,11 @@ export const THEME = createMuiTheme({
         },
         secondary: purple,
     },
+    overrides: {
+        MuiButton: {
+            root: {
+                margin: '8px',
+            }
+        }
+    },
 });
