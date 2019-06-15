@@ -10,7 +10,6 @@ export interface Track {
     selected: boolean
     highlighted: boolean
     device: Device
-    color: string
 }
 
 export enum RenderStyle {

@@ -14,7 +14,6 @@ import {
 } from "../actionTypes";
 import moment from 'moment';
 import {maxTo, minFrom} from "../../service/timeRangeService";
-import {getIndexedColor} from "../../service/colorService";
 
 export interface MapViewState {
     trackGroups: Array<TrackGroup>
@@ -38,21 +37,20 @@ const initialState = (): MapViewState => ({
     trackGroups: [defaultTrackGroup()]
 });
 
-const defaultTrack = (device: Device, index: number): Track => {
+const defaultTrack = (device: Device): Track => {
     return {
         active: true,
         selected: false,
         highlighted: false,
         device: device,
-        color: getIndexedColor(index),
     };
 };
 
 const updateViewsWithDevices = (oldViews: Array<TrackGroup>, devices: Array<Device>): Array<TrackGroup> => {
     return oldViews.map(oldView => ({
         ...oldView,
-        tracks: devices.map((device, index) => (
-            oldView.tracks.find(track => deviceEquals(track.device, device)) || defaultTrack(device, index)
+        tracks: devices.map((device) => (
+            oldView.tracks.find(track => deviceEquals(track.device, device)) || defaultTrack(device)
         ))
     }));
 };
@@ -68,7 +66,7 @@ const updateViewWithDateRange = (oldViews: Array<TrackGroup>, index: number, fro
 };
 
 const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload: SetTrackActivePayload) => {
-    return oldGroups.map((oldGroup, oldgroupIndex) => (oldgroupIndex === payload.trackGroupIndex ? {
+    return oldGroups.map((oldGroup, oldGroupIndex) => (oldGroupIndex === payload.trackGroupIndex ? {
         ...oldGroup,
         tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => (oldTrackIndex === payload.trackIndex ? {
             ...oldTrack,
@@ -98,7 +96,7 @@ const updateTrackGroupsWithHighlightedTrack = (oldGroups: Array<TrackGroup>, pay
 };
 
 const updateTrackGroupsWithRenderStyle = (oldGroups: Array<TrackGroup>, payload: SetRenderStylePayload) => {
-    return oldGroups.map((oldGroup, oldgroupIndex) => (oldgroupIndex === payload.trackGroupIndex ? {
+    return oldGroups.map((oldGroup, oldGroupIndex) => (oldGroupIndex === payload.trackGroupIndex ? {
         ...oldGroup,
         renderStyle: payload.renderStyle,
     } : oldGroup));

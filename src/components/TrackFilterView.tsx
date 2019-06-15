@@ -18,7 +18,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
 import RenderStyleSelector from "./RenderStyleSelector";
 import withTheme from "@material-ui/core/styles/withTheme";
-import {getTrackColor} from "../service/trackFormatter";
 
 
 interface TrackFilterMappedProps {
@@ -60,8 +59,7 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
 
     render() {
         return this.props.trackLayers.map((trackGroup, trackGroupIndex) =>
-            <Box key={trackGroupIndex}>
-                <div>Track group {trackGroupIndex}</div>
+            <Box key={trackGroupIndex} display="flex">
                 <DateRangePicker
                     fromDate={trackGroup.fromDate}
                     toDate={trackGroup.toDate}
@@ -69,7 +67,7 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
                 />
                 <RenderStyleSelector renderStyle={trackGroup.renderStyle}
                                      onChange={this.handleRenderStyleChange(trackGroupIndex)}/>
-                <List component="nav">
+                <List component="nav" style={{width: '100%'}}>
                     {trackGroup.tracks.map((track, trackIndex) =>
                         <div key={trackIndex}
                              onMouseEnter={this.handleHighlightTrack(trackGroupIndex, trackIndex)}
@@ -77,8 +75,8 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
                             <ListItem button
                                       selected={track.selected}
                                       onClick={this.handleSelectTrack(trackGroupIndex, trackIndex)}>
-                                {trackGroup.renderStyle === RenderStyle.HEATMAP ? '' : [
-                                    <ListItemIcon key="1"
+                                {trackGroup.renderStyle === RenderStyle.HEATMAP ? '' : (
+                                    <ListItemIcon
                                                   className="TrackFilterView-checkbox-icon"
                                                   onClick={event => event.stopPropagation()}>
                                         <Checkbox
@@ -86,12 +84,8 @@ class TrackFilterView extends Component<TrackFilterProps & WithTheme> {
                                             disableRipple
                                             onChange={this.handleToggleTrack(trackGroupIndex, trackIndex)}
                                         />
-                                    </ListItemIcon>,
-                                    <div key="2"
-                                         className="TrackFilterView-colorindicator" style={{
-                                        backgroundColor: getTrackColor(track, trackIndex)
-                                    }}/>
-                                ]}
+                                    </ListItemIcon>
+                                )}
                                 <ListItemText
                                     style={{
                                         color: track.selected ? this.props.theme.palette.primary.dark : 'inherit'

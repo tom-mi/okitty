@@ -22,7 +22,6 @@ const defaultState = (): MapViewState => ({
     trackGroups: [defaultTrackGroup()],
 });
 const createTrack = (device: Device): Track => ({
-    color: 'blue',
     active: true,
     selected: false,
     highlighted: false,
@@ -30,7 +29,6 @@ const createTrack = (device: Device): Track => ({
 });
 const DEVICE_1: Device = {device: 'phone', user: 'tommi'};
 const DEVICE_2: Device = {device: 'tablet', user: 'john'};
-const DEVICE_3: Device = {device: 'phone', user: 'john'};
 
 const populatedState = (): MapViewState => ({
     trackGroups: [
@@ -68,7 +66,6 @@ describe('the mapViewReducer', () => {
         expect(newState.trackGroups[0].tracks[0].active).toBeTruthy();
         expect(newState.trackGroups[0].tracks[1].device).toEqual(DEVICE_2);
         expect(newState.trackGroups[0].tracks[1].active).toBeTruthy();
-        expect(newState.trackGroups[0].tracks[0].color).not.toEqual(newState.trackGroups[0].tracks[1].color);
     });
 
     it('changes the date range of the specified track group', () => {

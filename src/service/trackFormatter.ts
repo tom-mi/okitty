@@ -6,7 +6,7 @@ import Style from "ol/style/Style";
 import Stroke from "ol/style/Stroke";
 import GeoJSON from "ol/format/GeoJSON";
 import Heatmap from "ol/layer/Heatmap";
-import {COLOR_GRADIENT, getIndexedColor, PRIMARY_COLOR, SECONDARY_COLOR} from "./colorService";
+import {COLOR_GRADIENT, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR_OPAQUE} from "./colorService";
 import {Circle} from "ol/style";
 import Fill from "ol/style/Fill";
 
@@ -33,13 +33,13 @@ function pointLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer
     });
 }
 
-export function getTrackColor(track: Track, index: number): string {
+export function getTrackColor(track: Track): string {
     if (track.highlighted) {
         return SECONDARY_COLOR;
     } else if (track.selected) {
         return PRIMARY_COLOR;
     } else {
-        return getIndexedColor(index);
+        return SECONDARY_COLOR_OPAQUE;
     }
 }
 
@@ -53,20 +53,20 @@ export function trackLayerZIndex(track: Track): number {
     }
 }
 
-export function trackLayerStyle(track: Track, index: number): Style {
+export function trackLayerStyle(track: Track): Style {
     return new Style({
         stroke: new Stroke({
-            color: getTrackColor(track, index),
+            color: getTrackColor(track),
             width: 5,
         }),
     });
 }
 
-export function pointLayerStyle(track: Track, index: number): Style {
+export function pointLayerStyle(track: Track): Style {
     return new Style({
         image: new Circle({
             radius: 4,
-            fill: new Fill({color: getTrackColor(track, index)}),
+            fill: new Fill({color: getTrackColor(track)}),
             stroke: new Stroke({width: 1, color: '#FFFFFF'}),
         }),
     })
@@ -78,7 +78,6 @@ function heatmapLayerFromTrack(trackGroup: TrackGroup, track: Track): VectorLaye
             url: getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
             format: new GeoJSON(),
         }),
-        opacity: 0.8,
         gradient: COLOR_GRADIENT,
     });
 }

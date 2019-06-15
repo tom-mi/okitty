@@ -127,9 +127,9 @@ class MapView extends Component<MapProps, MapState> {
                         layer.setVisible(renderStyle === trackGroup.renderStyle && (track.active || track.selected || track.highlighted));
                         layer.setZIndex(trackLayerZIndex(track));
                         if (renderStyle === RenderStyle.TRACK) {
-                            layer.setStyle(trackLayerStyle(track, trackIndex));
+                            layer.setStyle(trackLayerStyle(track));
                         } else if (renderStyle === RenderStyle.POINTS) {
-                            layer.setStyle(pointLayerStyle(track, trackIndex));
+                            layer.setStyle(pointLayerStyle(track));
                         }
                     }
                 });
