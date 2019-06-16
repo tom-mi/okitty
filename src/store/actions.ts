@@ -37,7 +37,7 @@ function receiveConfig(apiUrl: string): ActionTypes {
 export const fetchConfig = (): ThunkAction<void, State, void, ActionTypes> => async (dispatch) => {
     await dispatch(requestConfig());
     try {
-        const config = await fetch(process.env.REACT_APP_CONFIG_URL || 'config.json')
+        const config = await fetch(process.env.REACT_APP_CONFIG_URL || `${process.env.PUBLIC_URL}/config.json`)
             .then(it => it.json());
         return dispatch(receiveConfig(config['apiUrl']))
     } catch(err) {
