@@ -5,7 +5,7 @@
     left: 0;
     right: 0;
     min-height: 200px;
-    background-color: green;  /* TODO for debugging */
+    background-color: gray;
 }
 
 .MapComponent-custom-controls {

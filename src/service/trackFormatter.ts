@@ -1,6 +1,5 @@
 import {RenderStyle, Track, TrackGroup} from "../store/modelTypes";
 import VectorSource from "ol/source/Vector";
-import {getLocationUrl} from "./otRecorderClient";
 import VectorLayer from "ol/layer/Vector";
 import Style from "ol/style/Style";
 import Stroke from "ol/style/Stroke";
@@ -9,6 +8,7 @@ import Heatmap from "ol/layer/Heatmap";
 import {COLOR_GRADIENT, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR_OPAQUE} from "./colorService";
 import {Circle} from "ol/style";
 import Fill from "ol/style/Fill";
+import otRecorderClient from "./otRecorderClient";
 
 
 export type LayerByRenderStyle = {
@@ -18,7 +18,7 @@ export type LayerByRenderStyle = {
 function trackLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
     return new VectorLayer({
         source: new VectorSource({
-            url: getLocationUrl(track.device, 'linestring', trackGroup.from, trackGroup.to),
+            url: otRecorderClient.getLocationUrl(track.device, 'linestring', trackGroup.from, trackGroup.to),
             format: new GeoJSON(),
         }),
     });
@@ -27,7 +27,7 @@ function trackLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer
 function pointLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
     return new VectorLayer({
         source: new VectorSource({
-            url: getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
+            url: otRecorderClient.getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
             format: new GeoJSON(),
         }),
     });
@@ -75,7 +75,7 @@ export function pointLayerStyle(track: Track): Style {
 function heatmapLayerFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
     return new Heatmap({
         source: new VectorSource({
-            url: getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
+            url: otRecorderClient.getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
             format: new GeoJSON(),
         }),
         gradient: COLOR_GRADIENT,

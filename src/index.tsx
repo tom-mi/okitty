@@ -4,13 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
-import {configureStore} from "redux-starter-kit";
-import rootReducer from "./store/rootReducer";
 import {initialize} from "./initialActions";
+import {store} from "./store";
 
-const store = configureStore({
-  reducer: rootReducer
-});
 
 store.dispatch(initialize());
 
