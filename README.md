@@ -1,7 +1,7 @@
 # okitty
 
 Web Frontend for [OwnTracks Recorder](https://github.com/owntracks/recorder).
-It uses the builtin [HTTP API of OwnTracks Recorder](https://github.com/owntracks/recorder).
+It uses the builtin [HTTP API of OwnTracks Recorder](https://github.com/owntracks/recorder/blob/master/API.md).
 
 ## Development
 
