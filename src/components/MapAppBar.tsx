@@ -81,10 +81,6 @@ class MapAppBar extends Component<MapAppBarProps, MapAppBarState> {
             <Menu
                 id="menu-appbar"
                 anchorEl={this.state.layersMenuAnchorsElement}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
                 keepMounted
                 transformOrigin={{
                     vertical: 'top',
