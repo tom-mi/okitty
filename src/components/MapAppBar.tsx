@@ -68,7 +68,11 @@ class MapAppBar extends Component<MapAppBarProps, MapAppBarState> {
                 <IconButton edge="start" color="inherit" onClick={this.handleToggleExpand}>
                     {this.props.controlsVisible ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                 </IconButton>
-                <Typography variant="h5">🐱 okitty </Typography>
+                <Typography variant="h5">
+                    <span role="img" aria-label="Cat Emoji">🐱</span>
+                    &nbsp;
+                    okitty
+                </Typography>
                 <div style={{flexGrow: 1}}/>
                 <IconButton edge="end" color="inherit" onClick={this.handleOpenLayersMenu}>
                     <LayersIcon/>
