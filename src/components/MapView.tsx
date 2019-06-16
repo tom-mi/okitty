@@ -4,7 +4,6 @@ import View from "ol/View";
 import {defaults as defaultControls} from 'ol/control';
 import 'ol/ol.css';
 import './MapComponent.css';
-import Geolocation from "ol/Geolocation";
 import {getMapViewControlsVisible, getMapViewMapLayer, getMapViewTrackGroups} from "../store/mapView/mapViewSelector";
 import {AllMapLayers, AllRenderStyles, deviceEquals, MapLayer, RenderStyle, TrackGroup} from "../store/modelTypes";
 import {connect} from "react-redux";
@@ -40,7 +39,6 @@ interface MapState {
     }
     tileLayers: Array<{ type: MapLayer, tileLayer: TileLayer }>
     trackLayers: Array<Array<LayerByRenderStyle>>
-    geolocation: Geolocation
     zoomSynchronized: boolean,
 }
 
@@ -52,9 +50,6 @@ class MapView extends Component<MapProps, MapState> {
             type: mapLayer,
             tileLayer: createMapLayer(mapLayer),
         }));
-        const geolocation = new Geolocation({
-            tracking: true,
-        });
         const zoomToTracksControl = new SimpleMapControl('⛶', [0, 3], this.zoomToCurrentTracksAndSynchronizeZoom);
         const map = new OlMap({
             target: this.mapRef.current!,
@@ -74,7 +69,6 @@ class MapView extends Component<MapProps, MapState> {
 
         this.setState({
             map: map,
-            geolocation: geolocation,
             tileLayers: tileLayers,
             trackLayers: [],
             controls: {
