@@ -61,19 +61,18 @@ class MapAppBar extends Component<MapAppBarProps, MapAppBarState> {
         this.setState({layersMenuAnchorsElement: null});
     };
 
-
     render() {
         return <AppBar position="relative">
             <Toolbar>
-                <IconButton edge="start" color="inherit" onClick={this.handleToggleExpand}>
-                    {this.props.controlsVisible ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-                </IconButton>
                 <Typography variant="h5">
                     <span role="img" aria-label="Cat Emoji">🐱</span>
                     &nbsp;
                     okitty
                 </Typography>
                 <div style={{flexGrow: 1}}/>
+                <IconButton edge="start" color="inherit" onClick={this.handleToggleExpand}>
+                    {this.props.controlsVisible ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                </IconButton>
                 <IconButton edge="end" color="inherit" onClick={this.handleOpenLayersMenu}>
                     <LayersIcon/>
                 </IconButton>
