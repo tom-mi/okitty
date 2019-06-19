@@ -1,8 +1,6 @@
 import {Device, MapLayer, RenderStyle} from "./modelTypes";
 import {NotificationActionTypes} from "./notification/notificationActionTypes";
-
-export const APP_REQUEST_CONFIG = 'APP_REQUEST_CONFIG';
-export const APP_RECEIVE_CONFIG = 'APP_RECEIVE_CONFIG';
+import {AppActionTypes} from "./app/appActionTypes";
 
 export const DEVICES_REQUEST_DEVICES = 'DEVICES_REQUEST_DEVICES';
 export const DEVICES_RECEIVE_DEVICES = 'DEVICES_RECEIVE_DEVICES';
@@ -17,19 +15,6 @@ export const MAP_VIEW_SET_MAP_LAYER = 'MAP_VIEW_SET_MAP_LAYER';
 
 export interface NoOp {
     type: undefined,
-}
-
-export interface RequestConfigAction {
-    type: typeof APP_REQUEST_CONFIG
-}
-
-export interface ReceiveConfigPayload {
-    apiUrl: string
-}
-
-export interface ReceiveConfigAction {
-    type: typeof APP_RECEIVE_CONFIG
-    payload: ReceiveConfigPayload
 }
 
 export interface RequestDevicesAction {
@@ -108,8 +93,7 @@ export interface SetMapLayerAction {
 }
 
 export type ActionTypes = NoOp
-    | RequestConfigAction
-    | ReceiveConfigAction
+    | AppActionTypes
     | RequestDevicesAction
     | ReceiveDevicesAction
     | ChangeDateRangeAction

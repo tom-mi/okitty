@@ -1,8 +1,6 @@
 import {ThunkAction} from "redux-thunk";
 import {
     ActionTypes,
-    APP_RECEIVE_CONFIG,
-    APP_REQUEST_CONFIG,
     DEVICES_RECEIVE_DEVICES,
     DEVICES_REQUEST_DEVICES,
     MAP_VIEW_CHANGE_DATE_RANGE,
@@ -18,33 +16,6 @@ import {State} from "./rootReducer";
 import {pushNotification} from "./notification/notificationActions";
 import {NotificationType} from "./notification/notificationTypes";
 import otRecorderClient from "../service/otRecorderClient";
-
-
-function requestConfig(): ActionTypes {
-    return {
-        type: APP_REQUEST_CONFIG,
-    };
-}
-
-function receiveConfig(apiUrl: string): ActionTypes {
-    console.log('receiving config', apiUrl);
-    return {
-        type: APP_RECEIVE_CONFIG,
-        payload: {apiUrl},
-    };
-}
-
-export const fetchConfig = (): ThunkAction<void, State, void, ActionTypes> => async (dispatch) => {
-    await dispatch(requestConfig());
-    try {
-        const config = await fetch(process.env.REACT_APP_CONFIG_URL || `${process.env.PUBLIC_URL}/config.json`)
-            .then(it => it.json());
-        return dispatch(receiveConfig(config['apiUrl']))
-    } catch(err) {
-        console.error(err);
-        dispatch(pushNotification(NotificationType.ERROR, 'Could not fetch config'));
-    }
-};
 
 
 function requestDevices(): ActionTypes {

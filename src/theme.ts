@@ -13,6 +13,11 @@ export const THEME = createMuiTheme({
             root: {
                 margin: '8px',
             }
-        }
+        },
+        MuiFormControl: {
+            root: {
+                margin: '8px',
+            }
+        },
     },
 });

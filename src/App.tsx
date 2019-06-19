@@ -6,6 +6,7 @@ import {MuiThemeProvider} from "@material-ui/core/styles";
 import {THEME} from "./theme";
 import {SnackbarProvider} from "notistack";
 import Notifier from "./components/Notifier";
+import Login from "./components/Login";
 
 const App: React.FC = () => {
     return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
                     <Notifier/>
                     <div className="App">
                         <main className="App-main">
+                            <Login/>
                             <Switch>
                                 <Route path="/" exact component={MainView}/>
                                 <MainView/>
