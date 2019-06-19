@@ -13,8 +13,6 @@ import {
 } from "./actionTypes";
 import {Device, MapLayer, RenderStyle} from "./modelTypes";
 import {State} from "./rootReducer";
-import {pushNotification} from "./notification/notificationActions";
-import {NotificationType} from "./notification/notificationTypes";
 import otRecorderClient from "../service/otRecorderClient";
 
 
@@ -36,7 +34,6 @@ function receiveDevices(devices: Array<Device>): ActionTypes {
 export const fetchDevices = (): ThunkAction<void, State, void, ActionTypes> => async (dispatch) => {
     dispatch(requestDevices());
     const devices = await otRecorderClient.getDevices();
-    dispatch(pushNotification(NotificationType.SUCCESS, 'Fetched devices'));
     return dispatch(receiveDevices(devices));
 };
 

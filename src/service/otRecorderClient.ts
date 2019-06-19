@@ -32,11 +32,9 @@ class OtRecorderClient {
     }
 
     checkResponse(response: Response): Response {
-        console.log("Checking response");
         if (response.status === 200) {
             return response;
         } else {
-            console.log("Response:", response);
             if (response.status === 401) {
                 this.store.dispatch(unauthorized());
             }
@@ -46,8 +44,6 @@ class OtRecorderClient {
 
     getDevices(): Promise<Array<Device>> {
         const usersUrl = new URL(`${this.getApiUrl()}/list`);
-        console.debug('api url', this.getApiUrl());
-        console.debug(usersUrl);
 
         return fetch(usersUrl.toString(), {headers: this.getHeaders()})
             .then(response => this.checkResponse(response))
@@ -86,6 +82,17 @@ class OtRecorderClient {
         url.searchParams.append('to', to);
 
         return url.toString();
+    }
+
+    fetchLocation(device: Device, format: string, from: string, to: string): Promise<string> {
+        return fetch(this.getLocationUrl(device, format, from, to), {headers: this.getHeaders()})
+            .then(response => this.checkResponse(response))
+            .then(response => response.text())
+            .catch((err) => {
+                console.error(err);
+                this.store.dispatch(pushNotification(NotificationType.ERROR, 'Could not fetch location data'));
+                throw err;
+            });
     }
 }
 

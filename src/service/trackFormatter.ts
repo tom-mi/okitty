@@ -9,27 +9,52 @@ import {COLOR_GRADIENT, PRIMARY_COLOR, SECONDARY_COLOR, SECONDARY_COLOR_OPAQUE} 
 import {Circle} from "ol/style";
 import Fill from "ol/style/Fill";
 import otRecorderClient from "./otRecorderClient";
+import Feature from "ol/Feature";
+import {Extent} from "ol/extent";
+import Projection from "ol/proj/Projection";
 
 
 export type LayerByRenderStyle = {
     [key in RenderStyle]: VectorLayer
 }
 
+function vectorSource(trackGroup: TrackGroup, track: Track, format: string) {
+    const source = new VectorSource({
+        format: new GeoJSON(),
+        loader: ((extent: Extent, resolution: number, projection: Projection) => {
+            otRecorderClient.fetchLocation(track.device, format, trackGroup.from, trackGroup.to)
+                .then(data => {
+                    const features = source.getFormat().readFeatures(data, {
+                        extent: extent,
+                        featureProjection: projection,
+                    }) as Feature[];
+                    source.addFeatures(features);
+                })
+                .catch(err => {
+                    console.log('Error loading vector layer', err);
+                    source.removeLoadedExtent(extent);
+                })
+        }),
+    });
+    return source;
+}
+
 function trackLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
     return new VectorLayer({
-        source: new VectorSource({
-            url: otRecorderClient.getLocationUrl(track.device, 'linestring', trackGroup.from, trackGroup.to),
-            format: new GeoJSON(),
-        }),
+        source: vectorSource(trackGroup, track, 'linestring'),
     });
 }
 
 function pointLayersFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
     return new VectorLayer({
-        source: new VectorSource({
-            url: otRecorderClient.getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
-            format: new GeoJSON(),
-        }),
+        source: vectorSource(trackGroup, track, 'geojson'),
+    });
+}
+
+function heatmapLayerFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
+    return new Heatmap({
+        source: vectorSource(trackGroup, track, 'geojson'),
+        gradient: COLOR_GRADIENT,
     });
 }
 
@@ -70,16 +95,6 @@ export function pointLayerStyle(track: Track): Style {
             stroke: new Stroke({width: 1, color: '#FFFFFF'}),
         }),
     })
-}
-
-function heatmapLayerFromTrack(trackGroup: TrackGroup, track: Track): VectorLayer {
-    return new Heatmap({
-        source: new VectorSource({
-            url: otRecorderClient.getLocationUrl(track.device, 'geojson', trackGroup.from, trackGroup.to),
-            format: new GeoJSON(),
-        }),
-        gradient: COLOR_GRADIENT,
-    });
 }
 
 export function layersFromTrackGroup(trackGroup: TrackGroup): Array<LayerByRenderStyle> {
