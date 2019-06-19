@@ -3,6 +3,21 @@
 Web Frontend for [OwnTracks Recorder](https://github.com/owntracks/recorder).
 It uses the builtin [HTTP API of OwnTracks Recorder](https://github.com/owntracks/recorder/blob/master/API.md).
 
+## Installation
+
+* Extract the tarball
+* Adapt the config file `config.json` to your needs
+* Serve the content with a webserver
+
+## Configuration
+
+There are two options in `config.json`:
+
+* `apiUrl`: The url to the OwnTracks Recorder API, including the base path (`.../api/0`).
+* `authorizationType`: The login mechanism required for the API. Currently supported:
+** `NONE`: No login required.
+** `BASIC_AUTH`: Login via Basic Authentication. If specified, a login form will be displayed during initialization.
+
 ## Development
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
