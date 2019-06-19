@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, KeyboardEvent} from 'react';
 import 'ol/ol.css';
 import './MapComponent.css';
 import {WithTheme} from "@material-ui/core";
@@ -49,6 +49,13 @@ class BasicAuthLoginView extends Component<BasicAuthLoginProps & WithTheme, Basi
         this.props.login(AuthorizationType.BASIC_AUTH, authHeader);
     };
 
+    handleKeyPress = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.handleLoginClick();
+        }
+    };
+
     render() {
         return (
             <Dialog open={!this.props.isLoggedIn}>
@@ -57,9 +64,15 @@ class BasicAuthLoginView extends Component<BasicAuthLoginProps & WithTheme, Basi
                     <DialogContentText>
                         Please provide basic auth credentials for the OwnTracks-Recorder API.
                     </DialogContentText>
-                    <TextField label="Username" onChange={event => this.setState({username: event.target.value})}/>
-                    <TextField label="Password" onChange={event => this.setState({password: event.target.value})}
-                               type="password"/>
+                    <TextField label="Username"
+                               onChange={event => this.setState({username: event.target.value})}
+                               onKeyPress={this.handleKeyPress}
+                    />
+                    <TextField label="Password"
+                               onChange={event => this.setState({password: event.target.value})}
+                               onKeyPress={this.handleKeyPress}
+                               type="password"
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleLoginClick}>Login</Button>
