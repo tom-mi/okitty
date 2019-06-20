@@ -14,7 +14,7 @@ There are two versions of the app, one to be served from root (`/`), one to be s
 
 ### Configuration
 
-There are two options in `config.json`:
+There are two required parameters in `config.json`:
 
 * `apiUrl`: The url to the OwnTracks Recorder API, including the base path (`.../api/0`). This can be either a full
   url like `http://my.server:8032/api/0` or a absolute path like `/api/0` (in this case, host, port & scheme will be
