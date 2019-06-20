@@ -2,16 +2,16 @@ import {Device, deviceEquals, MapLayer, RenderStyle, Track, TrackGroup} from "..
 import {
     ActionTypes,
     DEVICES_RECEIVE_DEVICES,
-    HighlightTrackPayload,
     MAP_VIEW_CHANGE_DATE_RANGE,
-    MAP_VIEW_HIGHLIGHT_TRACK,
+    MAP_VIEW_HIGHLIGHT_TRACK, MAP_VIEW_RECEIVE_GPX, MAP_VIEW_REQUEST_GPX,
     MAP_VIEW_SELECT_TRACK,
-    MAP_VIEW_SET_CONTROLS_VISIBLE, MAP_VIEW_SET_MAP_LAYER,
+    MAP_VIEW_SET_CONTROLS_VISIBLE,
+    MAP_VIEW_SET_MAP_LAYER,
     MAP_VIEW_SET_RENDER_STYLE,
     MAP_VIEW_SET_TRACK_ACTIVE,
-    SelectTrackPayload,
     SetRenderStylePayload,
-    SetTrackActivePayload
+    SetTrackActivePayload,
+    TrackIdentifierPayload
 } from "../actionTypes";
 import moment from 'moment';
 import {maxTo, minFrom} from "../../service/timeRangeService";
@@ -48,6 +48,7 @@ const defaultTrack = (device: Device): Track => {
         selected: false,
         highlighted: false,
         device: device,
+        isDownloadingGpx: false
     };
 };
 
@@ -80,7 +81,17 @@ const updateTrackGroupsWithActiveTrack = (oldGroups: Array<TrackGroup>, payload:
     } : oldGroup));
 };
 
-const updateTrackGroupsWithSelectedTrack = (oldGroups: Array<TrackGroup>, payload: SelectTrackPayload) => {
+const updateTracksWithDownloadingGpxState = (oldGroups: Array<TrackGroup>, payload: TrackIdentifierPayload, value: boolean) => {
+    return oldGroups.map((oldGroup, oldGroupIndex) => (oldGroupIndex === payload.trackGroupIndex ? {
+        ...oldGroup,
+        tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => (oldTrackIndex === payload.trackIndex ? {
+            ...oldTrack,
+            isDownloadingGpx: value,
+        } : oldTrack))
+    } : oldGroup));
+};
+
+const updateTrackGroupsWithSelectedTrack = (oldGroups: Array<TrackGroup>, payload: TrackIdentifierPayload) => {
     return oldGroups.map((oldGroup, oldGroupIndex) => ({
         ...oldGroup,
         tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => ({
@@ -91,7 +102,7 @@ const updateTrackGroupsWithSelectedTrack = (oldGroups: Array<TrackGroup>, payloa
     }));
 };
 
-const updateTrackGroupsWithHighlightedTrack = (oldGroups: Array<TrackGroup>, payload: HighlightTrackPayload) => {
+const updateTrackGroupsWithHighlightedTrack = (oldGroups: Array<TrackGroup>, payload: TrackIdentifierPayload) => {
     return oldGroups.map((oldGroup, oldGroupIndex) => ({
         ...oldGroup,
         tracks: oldGroup.tracks.map((oldTrack, oldTrackIndex) => ({
@@ -144,12 +155,22 @@ export function mapViewReducer(
             return {
                 ...state,
                 controlsVisible: action.payload.controlsVisible,
-            }
+            };
         case MAP_VIEW_SET_MAP_LAYER:
             return {
                 ...state,
                 mapLayer: action.payload.mapLayer,
-            }
+            };
+        case MAP_VIEW_REQUEST_GPX:
+            return {
+                ...state,
+                trackGroups: updateTracksWithDownloadingGpxState(state.trackGroups, action.payload, true),
+            };
+        case MAP_VIEW_RECEIVE_GPX:
+            return {
+                ...state,
+                trackGroups: updateTracksWithDownloadingGpxState(state.trackGroups, action.payload, false),
+            };
     }
     return state
 }

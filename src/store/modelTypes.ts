@@ -10,6 +10,7 @@ export interface Track {
     selected: boolean
     highlighted: boolean
     device: Device
+    isDownloadingGpx: boolean
 }
 
 export enum RenderStyle {

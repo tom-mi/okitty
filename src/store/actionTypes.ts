@@ -12,6 +12,8 @@ export const MAP_VIEW_HIGHLIGHT_TRACK = 'MAP_VIEW_HIGHLIGHT_TRACK';
 export const MAP_VIEW_SET_RENDER_STYLE = 'MAP_VIEW_SET_RENDER_STYLE';
 export const MAP_VIEW_SET_CONTROLS_VISIBLE = 'MAP_VIEW_SET_CONTROLS_VISIBLE';
 export const MAP_VIEW_SET_MAP_LAYER = 'MAP_VIEW_SET_MAP_LAYER';
+export const MAP_VIEW_REQUEST_GPX = 'MAP_VIEW_REQUEST_GPX';
+export const MAP_VIEW_RECEIVE_GPX = 'MAP_VIEW_RECEIVE_GPX';
 
 export interface NoOp {
     type: undefined,
@@ -41,6 +43,11 @@ export interface ChangeDateRangeAction {
     payload: ChangeDateRangePayload,
 }
 
+export interface TrackIdentifierPayload {
+    trackGroupIndex: number
+    trackIndex: number
+}
+
 export interface SetTrackActivePayload {
     trackGroupIndex: number,
     trackIndex: number,
@@ -48,48 +55,48 @@ export interface SetTrackActivePayload {
 }
 
 export interface SetTrackActiveAction {
-    type: typeof MAP_VIEW_SET_TRACK_ACTIVE,
-    payload: SetTrackActivePayload,
+    type: typeof MAP_VIEW_SET_TRACK_ACTIVE
+    payload: SetTrackActivePayload
 }
 
 export interface SetRenderStylePayload {
-    trackGroupIndex: number,
-    renderStyle: RenderStyle,
+    trackGroupIndex: number
+    renderStyle: RenderStyle
 }
 
 export interface SetRenderStyleAction {
-    type: typeof MAP_VIEW_SET_RENDER_STYLE,
-    payload: SetRenderStylePayload,
-}
-
-export interface SelectTrackPayload {
-    trackGroupIndex: number,
-    trackIndex: number,
+    type: typeof MAP_VIEW_SET_RENDER_STYLE
+    payload: SetRenderStylePayload
 }
 
 export interface SelectTrackAction {
-    type: typeof MAP_VIEW_SELECT_TRACK,
-    payload: SelectTrackPayload,
-}
-
-export interface HighlightTrackPayload {
-    trackGroupIndex: number,
-    trackIndex: number,
+    type: typeof MAP_VIEW_SELECT_TRACK
+    payload: TrackIdentifierPayload
 }
 
 export interface HighlightTrackAction {
-    type: typeof MAP_VIEW_HIGHLIGHT_TRACK,
-    payload: HighlightTrackPayload,
+    type: typeof MAP_VIEW_HIGHLIGHT_TRACK
+    payload: TrackIdentifierPayload
 }
 
 export interface SetControlsVisibleAction {
-    type: typeof MAP_VIEW_SET_CONTROLS_VISIBLE,
-    payload: { controlsVisible: boolean },
+    type: typeof MAP_VIEW_SET_CONTROLS_VISIBLE
+    payload: { controlsVisible: boolean }
 }
 
 export interface SetMapLayerAction {
-    type: typeof MAP_VIEW_SET_MAP_LAYER,
-    payload: { mapLayer: MapLayer },
+    type: typeof MAP_VIEW_SET_MAP_LAYER
+    payload: { mapLayer: MapLayer }
+}
+
+export interface RequestGpxAction {
+    type: typeof MAP_VIEW_REQUEST_GPX
+    payload: TrackIdentifierPayload
+}
+
+export interface ReceiveGpxAction {
+    type: typeof MAP_VIEW_RECEIVE_GPX
+    payload: TrackIdentifierPayload
 }
 
 export type ActionTypes = NoOp
@@ -104,4 +111,6 @@ export type ActionTypes = NoOp
     | SetControlsVisibleAction
     | SetMapLayerAction
     | NotificationActionTypes
+    | RequestGpxAction
+    | ReceiveGpxAction
 
