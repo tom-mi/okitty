@@ -11,6 +11,5 @@ echo "Creating release for version ${VERSION}"
 mkdir -p ${DIST}
 npm run build
 tar \
-    --exclude 'build/config.local*.json' \
-    --strip-components=1 \
-    -czf "${DIST}/okitty-${VERSION}.tar.gz" build/
+    --exclude 'config.local*.json' \
+    -czf "${DIST}/okitty-${VERSION}.tar.gz" -C build/ .
