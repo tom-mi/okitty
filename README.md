@@ -5,9 +5,10 @@ It uses the builtin [HTTP API of OwnTracks Recorder](https://github.com/owntrack
 
 ## Installation
 
-* Extract the tarball
-* Adapt the config file `config.json` to your needs
-* Serve the content with a webserver
+* Download the latest release
+* Extract tarball
+* Adapt config file `config.json` to your needs
+* Serve via webserver
 
 ## Configuration
 
