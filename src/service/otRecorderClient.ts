@@ -17,8 +17,8 @@ class OtRecorderClient {
         this.store = store;
     }
 
-    private getApiUrl(): string {
-        return getApiUrl(this.store.getState())
+    private getApiUrl(path: string): URL {
+        return new URL(`${getApiUrl(this.store.getState())}${path}`, window.location.href);
     }
 
     private getHeaders() {
@@ -43,7 +43,7 @@ class OtRecorderClient {
     }
 
     getDevices(): Promise<Array<Device>> {
-        const usersUrl = new URL(`${this.getApiUrl()}/list`);
+        const usersUrl = this.getApiUrl('/list');
 
         return fetch(usersUrl.toString(), {headers: this.getHeaders()})
             .then(response => this.checkResponse(response))
@@ -51,7 +51,7 @@ class OtRecorderClient {
             .then(json => json['results'] as Array<string>)
             .then(users => {
                 return Promise.all(users.map(user => {
-                    const devicesUrl = new URL(`${this.getApiUrl()}/list`);
+                    const devicesUrl = this.getApiUrl('/list');
 
                     devicesUrl.searchParams.append('user', user);
 
@@ -73,7 +73,7 @@ class OtRecorderClient {
     }
 
     getLocationUrl(device: Device, format: string, from: string, to: string): string {
-        const url = new URL(`${this.getApiUrl()}/locations`);
+        const url = this.getApiUrl('/locations');
 
         url.searchParams.append('format', format);
         url.searchParams.append('user', device.user);

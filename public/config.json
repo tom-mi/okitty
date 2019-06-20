@@ -1,4 +1,4 @@
 {
-  "apiUrl": "http://localhost:8083/api/0",
+  "apiUrl": "/api/0",
   "authorizationType": "NONE"
 }
