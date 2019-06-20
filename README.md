@@ -3,6 +3,8 @@
 Web Frontend for [OwnTracks Recorder](https://github.com/owntracks/recorder).
 It uses the builtin [HTTP API of OwnTracks Recorder](https://github.com/owntracks/recorder/blob/master/API.md).
 
+![demo](https://github.com/tom-mi/okitty/releases/download/0.1.0/demo.gif)
+
 ## Installation
 
 There are two versions of the app, one to be served from root (`/`), one to be served under the context path `/okitty`
