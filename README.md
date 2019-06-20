@@ -18,9 +18,29 @@ There are two options in `config.json`:
 ** `NONE`: No login required.
 ** `BASIC_AUTH`: Login via Basic Authentication. If specified, a login form will be displayed during initialization.
 
+## Troubleshooting
+
+### Failed requests due to CORS
+
+When serving okitty under another domain than the ot-recorder API, your browser might block some requests to the API
+depending on your setup because of missing or wrong `Access-Control-` headers.
+
+* If you are accessing the API via a reverse proxy, you need to configure the proxy to handle OPTIONS requests properly.
+* As of version 0.8.4, ot-recorder API does not send any `Access-Control-` headers when requesting GPX files, i.e.
+  `format=gpx`. This affects the "Download GPX" feature. There are multiple ways to work around that, e.g. by setting up
+  a reverse proxy adding those missing headers.
+
 ## Development
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### Local config.json
+
+To simplify development & avoid changing the example `public/config.json`, you can override the config file for local
+development:
+
+* Put another config file next to `public/config.json`, e.g. `public/config.local.json`.
+* Add a file `.env.development.local` with the content `REACT_APP_CONFIG_URL=config.local.json`.
 
 ### Available Scripts
 
