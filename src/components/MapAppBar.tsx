@@ -64,11 +64,16 @@ class MapAppBar extends Component<MapAppBarProps, MapAppBarState> {
     render() {
         return <AppBar position="relative">
             <Toolbar>
-                <Typography variant="h5">
-                    <span role="img" aria-label="Cat Emoji">🐱</span>
-                    &nbsp;
-                    okitty
-                </Typography>
+                <div style={{alignItems: 'baseline', display: 'inline-flex'}}>
+                    <Typography variant="h5">
+                        <span role="img" aria-label="Cat Emoji">🐱</span>
+                        &nbsp;
+                        okitty
+                    </Typography>
+                    <Typography variant="caption" style={{marginLeft: '5px', opacity: 0.5}}>
+                        {process.env.REACT_APP_VERSION || 'dev'}
+                    </Typography>
+                </div>
                 <div style={{flexGrow: 1}}/>
                 <IconButton edge="start" color="inherit" onClick={this.handleToggleExpand}>
                     {this.props.controlsVisible ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
