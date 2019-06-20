@@ -15,8 +15,8 @@ There are two options in `config.json`:
 
 * `apiUrl`: The url to the OwnTracks Recorder API, including the base path (`.../api/0`).
 * `authorizationType`: The login mechanism required for the API. Currently supported:
-** `NONE`: No login required.
-** `BASIC_AUTH`: Login via Basic Authentication. If specified, a login form will be displayed during initialization.
+  * `NONE`: No login required.
+  * `BASIC_AUTH`: Login via Basic Authentication. If specified, a login form will be displayed during initialization.
 
 ## Troubleshooting
 
