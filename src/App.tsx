@@ -12,7 +12,7 @@ const App: React.FC = () => {
     return (
         <Router>
             <MuiThemeProvider theme={THEME}>
-                <SnackbarProvider>
+                <SnackbarProvider maxSnack={5}>
                     <Notifier/>
                     <div className="App">
                         <main className="App-main">

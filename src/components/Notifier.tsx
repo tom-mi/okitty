@@ -11,8 +11,8 @@ import {ThunkDispatch} from "redux-thunk";
 import {removeNotification} from "../store/notification/notificationActions";
 
 
-const AUTO_HIDE_DURATION_MS = 30 * 1000;
-const AUTO_HIDE_DURATION_MS_ERROR = 3600 * 1000;
+const AUTO_HIDE_DURATION_MS = 5 * 1000;
+const AUTO_HIDE_DURATION_MS_ERROR = 15 * 1000;
 
 interface NotifierMappedProps {
     notifications: Array<NotificationMessage>

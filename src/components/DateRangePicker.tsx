@@ -13,8 +13,10 @@ interface DateRangePickerProps {
 }
 
 interface DateRangePickerState {
-    fromDate: string,
-    toDate: string,
+    fromDate: string
+    toDate: string
+    fromError: boolean
+    toError: boolean
 }
 
 export default class DateRangePicker extends Component<DateRangePickerProps, DateRangePickerState> {
@@ -24,6 +26,8 @@ export default class DateRangePicker extends Component<DateRangePickerProps, Dat
         this.state = {
             fromDate: props.fromDate,
             toDate: props.toDate,
+            fromError: false,
+            toError: false,
         };
     }
 
@@ -34,16 +38,40 @@ export default class DateRangePicker extends Component<DateRangePickerProps, Dat
         })
     }
 
+    handleDateRangeChange() {
+        let fromError = false;
+        let toError = false;
+
+        if (this.state.fromDate.length === 0) {
+            fromError = true;
+        }
+        if (this.state.toDate.length === 0) {
+            toError = true;
+        }
+        if (this.state.fromDate.length > 0 && this.state.fromDate.length > 0 && this.state.fromDate > this.state.toDate) {
+            fromError = toError = true;
+        }
+
+        this.setState({
+            fromError: fromError,
+            toError: toError,
+        }, () => {
+            if (!fromError && !toError) {
+                this.props.onChange(this.state.fromDate, this.state.toDate);
+            }
+        });
+    }
+
     handleFromChange = (event: ChangeEvent<HTMLInputElement>) => {
         this.setState({
             fromDate: event.target.value,
-        }, () => this.props.onChange(this.state.fromDate, this.state.toDate));
+        }, this.handleDateRangeChange);
     };
 
     handleToChange = (event: ChangeEvent<HTMLInputElement>) => {
         this.setState({
             toDate: event.target.value,
-        }, () => this.props.onChange(this.state.fromDate, this.state.toDate));
+        }, this.handleDateRangeChange);
     };
 
     render() {
@@ -55,6 +83,7 @@ export default class DateRangePicker extends Component<DateRangePickerProps, Dat
                 type="date"
                 onChange={this.handleFromChange}
                 defaultValue={this.state.fromDate}
+                error={this.state.fromError}
                 InputLabelProps={{
                     shrink: true,
                 }}
@@ -66,6 +95,7 @@ export default class DateRangePicker extends Component<DateRangePickerProps, Dat
                 type="date"
                 onChange={this.handleToChange}
                 defaultValue={this.state.toDate}
+                error={this.state.toError}
                 InputLabelProps={{
                     shrink: true,
                 }}
